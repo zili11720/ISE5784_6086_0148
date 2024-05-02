@@ -4,11 +4,14 @@ import primitives.Point;
 import primitives.Vector;
 
 /**
- * The class represents a plane in a 3D space
+ * This class represents a plane in a 3D space, which is an infinite flat surface
+ * @author ayala
  */
 public class Plane implements  Geometry {
+
     /** A point on the plane */
-   private Point q;
+   private Point p0;
+
     /** A normal vector to the plane */
    private Vector normal;
 
@@ -19,7 +22,7 @@ public class Plane implements  Geometry {
      * @param p3 a point on the plane
      */
    Plane(Point p1, Point p2,Point p3) {
-       this.q=p1;
+       this.p0=p1;
        this.normal=null;
    }
     /**
@@ -28,7 +31,7 @@ public class Plane implements  Geometry {
      * @param vec the normal vector to the plane
      */
     Plane(Point p1, Vector vec) {
-        q = p1;
+        p0 = p1;
         normal = vec.normalize();
     }
 

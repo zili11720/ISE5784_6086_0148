@@ -3,7 +3,8 @@ package geometries;
 import primitives.Point;
 
 /**
- *
+ *Reperesents a triangle in 3D space, defined by three points
+ * @author ayala
  */
 public class Triangle extends Polygon{
     /**
