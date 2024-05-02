@@ -17,9 +17,9 @@ public final class Main {
      * @param args irrelevant here
      */
     public static void main(String[] args) {
-        Point  p1         = new Point(1, 2, 3);
-        Point  p2         = new Point(2, 4, 6);
-        Point  p3         = new Point(2, 4, 5);
+        Point  p1         = new Point(1.0, 2.0, 3.0);
+        Point  p2         = new Point(2.0, 4.0, 6.0);
+        Point  p3         = new Point(2.0, 4.0, 5.0);
 
         Vector v1         = new Vector(1, 2, 3);
         Vector v1Opposite = new Vector(-1, -2, -3);
@@ -30,7 +30,7 @@ public final class Main {
         // test zero vector =====================================================
         try {
             new Vector(0, 0, 0);
-            new Vector(Double3.ZERO);
+            //new Vector(Double3.ZERO);
             out.println("ERROR: zero vector does not throw an exception");
         } catch (IllegalArgumentException ignore) {} catch (Exception ignore) {
             out.println("ERROR: zero vector throws wrong exception");
