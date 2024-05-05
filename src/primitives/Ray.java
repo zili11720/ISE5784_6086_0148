@@ -2,7 +2,7 @@ package primitives;
 
 /**
  * Represents a ray in 3D space,defined by a starting point and a normalized vector for the direction
- * @author zili
+ * @author Zili
  */
 public class Ray {
     /**The starting point of the ray*/

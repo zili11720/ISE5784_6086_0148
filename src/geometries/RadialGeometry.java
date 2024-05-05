@@ -1,13 +1,13 @@
 package geometries;
 
 /**
- *Represents a 3D geometry that has a radius
- * @author ayala
+ *Class RadialGeometry represents a 3D geometry that has a radius
+ * @author Ayala
  */
 public abstract class RadialGeometry implements Geometry {
 
     /** The radius of the geometry */
-    protected double radius;
+    protected final double radius;
 
     /**
      * Constructs a radial geometry with the given radius

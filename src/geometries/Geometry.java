@@ -5,7 +5,7 @@ import primitives.Vector;
 
 /**
  *An interface for a 3D Geometry
- *@author zili
+ *@author Zili
  */
 public interface Geometry {
     /**

@@ -5,15 +5,15 @@ import primitives.Vector;
 
 /**
  * This class represents a plane in a 3D space, which is an infinite flat surface
- * @author ayala
+ * @author Ayala
  */
 public class Plane implements  Geometry {
 
     /** A point on the plane */
-   private Point p0;
+   private final Point p0;
 
     /** A normal vector to the plane */
-   private Vector normal;
+   private final Vector normal;
 
     /**
      * Constructs the plane using one of the given points and null for the normal vector
@@ -21,7 +21,7 @@ public class Plane implements  Geometry {
      * @param p2 a point on the plane
      * @param p3 a point on the plane
      */
-   Plane(Point p1, Point p2,Point p3) {
+   public Plane(Point p1, Point p2,Point p3) {
        this.p0=p1;
        this.normal=null;
    }
@@ -40,7 +40,7 @@ public class Plane implements  Geometry {
      * @return the normal vector to the plane
      */
     public Vector getNormal() {
-        return null;
+        return this.normal;
     }
 
     @Override

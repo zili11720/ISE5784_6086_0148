@@ -2,7 +2,7 @@ package primitives;
 
 /**
  * Represents a vector that starts from the origin to a specific point
- *  * @author zili
+ * @author Zili
  */
 public class Vector extends Point{
     /**
@@ -41,7 +41,7 @@ public class Vector extends Point{
 
     /**
      * Adds this vector to the given vector and returns the result as a new vector.
-     * @param v the vector to add to this vector
+     * @param vec the vector to add to this vector
      * @return the sum of this vector and the given vector as a new vector
      */
     public Vector add(Vector vec) {

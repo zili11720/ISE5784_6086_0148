@@ -1,3 +1,7 @@
+/**
+ * Zili Bombach 214700148 Zili11720@gmail.com
+ * Ayala Gelber 326686086 ayala04g@gmail.com
+ */
 package test;
 
 import static java.lang.System.out;
@@ -51,7 +55,7 @@ public final class Main {
         // Add vector to point
         if (!(p1.add(v1).equals(p2)))
             out.println("ERROR: (point + vector) = other point does not work correctly");
-        if (!(p1.add(v1Opposite).equals(Point.ZERO)))
+        if (!(p1.add(v1Opposite).equals(new Point(0.0,0.0,0.0))))
             out.println("ERROR: (point + vector) = center of coordinates does not work correctly");
 
         // distances

@@ -2,7 +2,7 @@ package primitives;
 
 /**
  * The class represents a point in 3-dimensional space
- * @author zili
+ * @author Zili
  */
 public class Point {
     /**
