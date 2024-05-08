@@ -16,7 +16,7 @@ public class Point {
      * @param y second coordinate of the point
      * @param z third coordinate of the point
      */
-    public Point(Double x, Double y, Double z) {xyz=new Double3(x,y,z);}
+    public Point(double x, double y, double z) {xyz=new Double3(x,y,z);}
 
     /**
      * Constructs a new point according to another point

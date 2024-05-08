@@ -21,9 +21,9 @@ public final class Main {
      * @param args irrelevant here
      */
     public static void main(String[] args) {
-        Point  p1         = new Point(1.0, 2.0, 3.0);
-        Point  p2         = new Point(2.0, 4.0, 6.0);
-        Point  p3         = new Point(2.0, 4.0, 5.0);
+        Point  p1         = new Point(1, 2, 3);
+        Point  p2         = new Point(2, 4, 6);
+        Point  p3         = new Point(2, 4, 5);
 
         Vector v1         = new Vector(1, 2, 3);
         Vector v1Opposite = new Vector(-1, -2, -3);
@@ -55,7 +55,7 @@ public final class Main {
         // Add vector to point
         if (!(p1.add(v1).equals(p2)))
             out.println("ERROR: (point + vector) = other point does not work correctly");
-        if (!(p1.add(v1Opposite).equals(new Point(0.0,0.0,0.0))))
+        if (!(p1.add(v1Opposite).equals(new Point(0,0,0))))
             out.println("ERROR: (point + vector) = center of coordinates does not work correctly");
 
         // distances
