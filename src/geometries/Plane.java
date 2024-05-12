@@ -23,8 +23,8 @@ public class Plane implements  Geometry {
      */
    public Plane(Point p1, Point p2,Point p3) {
        this.p0=p1;
-       Vector U = (Vector)p2.subtract(p1);
-       Vector V = (Vector)p3.subtract(p1);
+       Vector U = p2.subtract(p1);
+       Vector V = p3.subtract(p1);
        Vector N = U.crossProduct(V);
        normal = N.normalize();
    }
