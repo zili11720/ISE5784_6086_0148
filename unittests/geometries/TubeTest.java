@@ -24,11 +24,11 @@ class TubeTest {
         // =============== Equivalence Partitions Tests ==============
         // TC01: simple check
         assertEquals(new Vector(1, 1, 0).normalize(), tube.getNormal(new Point(1, 1, 2)),
-                "the normal is not correct");
+                "ERROR: the normal is not correct");
 
         // =============== Boundary Values Tests ==================
-        // TC11: Test for connection of the point to the head of the ray of the tube
+        // TC11: Test for when p-p0 is orthogonal to the ray of the tube
         assertEquals(new Vector(1, 1, 0).normalize(), tube.getNormal(new Point(1, 1, 1)),
-                "the normal is not correct");
+                "ERROR: the normal is not correct");
     }
 }

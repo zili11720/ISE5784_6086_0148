@@ -10,28 +10,38 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class PointTest {
 
-    Point p0 = new Point(0,0,0);
-    Point p1 = new Point(1, 1, 1);
-    Point p2 = new Point(2, 2, 2);
-    Vector v1 = new Vector(-1, -1, -1);
-    Vector v2 = new Vector(-1, 1, 0);
-    Vector v3 = new Vector(1,1,1);
-    Vector v4 = new Vector(3,3,3);
+    /**
+     * Delta value for accuracy when comparing the numbers of type 'double' in
+     * assertEquals
+     */
+    private final double DELTA = 0.000001;
+
+    Point  p0         = new Point(0,0,0);
+    Point  p1         = new Point(1, 2, 3);
+    Point  p2         = new Point(2, 4, 6);
+    Point  p3         = new Point(2, 4, 5);
+
+    Vector v1         = new Vector(1, 2, 3);
+    Vector v1Opposite = new Vector(-1, -2, -3);
+    Vector v2         = new Vector(-2, -4, -6);
+    Vector v3         = new Vector(0, 3, -2);
+    Vector v4         = new Vector(1, 2, 2);
 
     /**
      * Test method for {@link primitives.Point#subtract(primitives.Point)}.
      */
     @Test
-    void subtract() {
+    void testSubtract() {
         // ============ Equivalence Partitions Tests ==============
-        // TA01: Test that the subtracting is correct
-        assertEquals(v3, v4.subtract(p2), "Function subtract doesnt work correctly");
+        // TA01: Test for subtracting points
+        assertEquals(v1, p2.subtract(p1), "ERROR: (point2 - point1) does not work correctly");
         // =============== Boundary Values Tests ==================
-        // TA11: Test that the subtracting of zero point is correct
-        assertEquals(v1, v1.subtract(p0),"Function subtract doesnt work correctly for zero point");
-        // TA12: Test that a subtracting of a similar vectors is correct
-        assertThrows(IllegalArgumentException.class,()->v3.subtract(p1),
-                "Function subtract doesnt work correctly for similar" );
+        // TA11: Test for subtracting a point from itself
+        assertThrows(IllegalArgumentException.class,()->p1.subtract(p1),
+                "ERROR: (point - itself) does not throw an exception" );
+        //TA12: Test for subtracting zero point
+        assertEquals(v1, p1.subtract(p0),"ERROR:  (point2 -zero point) does not work correctly");
+
     }
 
     /**
@@ -40,13 +50,13 @@ class PointTest {
     @Test
     void testAdd() {
         // ============ Equivalence Partitions Tests ==============
-        // TA01: Test that the adding is correct
-        assertEquals(new Point(0,2,1), p1.add(v2), "Function add() doesnt work correct");
+        // TA01: Test for adding a vector to a point
+        assertEquals(p2, p1.add(v1), "ERROR: (point + vector) = other point does not work correctly");
         // =============== Boundary Values Tests ==================
         // TA11: Test that the adding of zero point is correct
-        assertEquals(p1, p0.add(v3),"Function add() doesnt work correctly for zero point ");
+        assertEquals(p1, p0.add(v1),"ERROR: Function add doesnt work correctly for zero point");
         // TA12: Test that the adding of opposites is correct
-        assertEquals(p0, p1.add(v1),"Function add() doesnt work correctly for opposites ");
+        assertEquals(p0, p1.add(v1Opposite),"ERROR: (point + vector) = center of coordinates does not work correctly");
 
     }
 
@@ -57,7 +67,10 @@ class PointTest {
     void testDistanceSquared() {
         // =======Equivalence Partitions Tests=======
         // TD01: Test that the distance between two points is calculated correctly
-        assertEquals(3, p1.distanceSquared(p2), "Function distanceSquared() doesn't work correctly");
+        assertEquals(9, p1.distanceSquared(p3), "ERROR: squared distance between points is wrong");
+        // =============== Boundary Values Tests ==================
+        // TA11:Test point squared distance to itself
+        assertEquals(0, p1.distanceSquared(p1),"ERROR: point squared distance to itself is not zero");
     }
 
     /**
@@ -67,7 +80,9 @@ class PointTest {
     void distance() {
         // =======Equivalence Partitions Tests=======
         // TC01: Testing if the squared distance between two points is calculated correctly
-        // (simple test)
-        assertEquals(Math.sqrt(3), p1.distance(p2), "Function distance() doesn't work correctly");
+        assertEquals(3, p1.distance(p3) , "ERROR: distance between points is wrong");
+        // =============== Boundary Values Tests ==================
+        // TA11:Test point distance to itself
+        assertEquals(0, p1.distanceSquared(p1),"ERROR: point distance to itself is not zero");
     }
 }
