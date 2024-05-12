@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for primitives.Point class
  * @author Zili
  */
-class PointTest {
+public class PointTest {
 
     /**
      * Delta value for accuracy when comparing the numbers of type 'double' in
@@ -31,7 +31,7 @@ class PointTest {
      * Test method for {@link primitives.Point#subtract(primitives.Point)}.
      */
     @Test
-    void testSubtract() {
+    public void testSubtract() {
         // ============ Equivalence Partitions Tests ==============
         // TA01: Test for subtracting points
         assertEquals(v1, p2.subtract(p1), "ERROR: (point2 - point1) does not work correctly");
@@ -48,7 +48,7 @@ class PointTest {
      * Test method for {@link primitives.Point#add(primitives.Vector)}
      */
     @Test
-    void testAdd() {
+    public void testAdd() {
         // ============ Equivalence Partitions Tests ==============
         // TA01: Test for adding a vector to a point
         assertEquals(p2, p1.add(v1), "ERROR: (point + vector) = other point does not work correctly");
@@ -64,7 +64,7 @@ class PointTest {
      * Test method for {@link primitives.Point#distanceSquared(primitives.Point)}.
      */
     @Test
-    void testDistanceSquared() {
+    public void testDistanceSquared() {
         // =======Equivalence Partitions Tests=======
         // TD01: Test that the distance between two points is calculated correctly
         assertEquals(9, p1.distanceSquared(p3), "ERROR: squared distance between points is wrong");
@@ -77,7 +77,7 @@ class PointTest {
      * Test method for {@link primitives.Point#distance(primitives.Point)}.
      */
     @Test
-    void distance() {
+    public void distance() {
         // =======Equivalence Partitions Tests=======
         // TC01: Testing if the squared distance between two points is calculated correctly
         assertEquals(3, p1.distance(p3) , "ERROR: distance between points is wrong");

@@ -9,7 +9,7 @@ import static primitives.Util.isZero;
  * Unit tests for primitives.Vector class
  * @author Zili
  */
-class VectorTest {
+public class VectorTest {
 
     /**
      * Delta value for accuracy when comparing the numbers of type 'double' in
@@ -33,7 +33,7 @@ class VectorTest {
      * Test method for {@link primitives.Vector#add(primitives.Vector)}.
      */
     @Test
-    void testAdd() {
+    public void testAdd() {
         // ============ Equivalence Partitions Tests ==============
         // TA01: Test that the adding of vectors is correct
         assertEquals(v1Opposite, v1.add(v2), "ERROR: Vector + Vector does not work correctly");
@@ -47,7 +47,7 @@ class VectorTest {
      * Test method for {@link primitives.Vector#scale(double)}.
      */
     @Test
-    void testScale() {
+    public void testScale() {
         // ============ Equivalence Partitions Tests ==============
         // TS01: Tests that multiplication by a positive scalar is correct
         assertEquals(new Vector(2,4,6), v1.scale(2),
@@ -67,7 +67,7 @@ class VectorTest {
      * Test method for {@link primitives.Vector#dotProduct(primitives.Vector)}.
      */
     @Test
-    void testDotProduct() {
+    public void testDotProduct() {
         // ============ Equivalence Partitions Tests ==============
         //tD01: Test simple dot product between vectors
         assertEquals(-28, v1.dotProduct(v2), DELTA, "ERROR: dotProduct() wrong value");
@@ -81,7 +81,7 @@ class VectorTest {
      * Test method for {@link primitives.Vector#crossProduct(primitives.Vector)}.
      */
     @Test
-    void testCrossProduct() {
+    public void testCrossProduct() {
         // ============ Equivalence Partitions Tests ==============
         Vector vr = v1.crossProduct(v3);
         // TC01: Test that length of cross-product is proper (orthogonal vectors taken
@@ -103,7 +103,7 @@ class VectorTest {
      * Test method for {@link primitives.Vector#lengthSquared()}.
      */
     @Test
-    void testLengthSquared() {
+    public void testLengthSquared() {
         // ============ Equivalence Partitions Tests ==============
         // TL01: Test length Squared result for a vector
         assertEquals(9, v4.lengthSquared(),
@@ -114,7 +114,7 @@ class VectorTest {
      * Test method for {@link primitives.Vector#length()}.
      */
     @Test
-    void testLength() {
+    public void testLength() {
         // ============ Equivalence Partitions Tests ==============
         // TL01: Test length result for positive coordinate
         assertEquals(3, v4.length(),
@@ -125,7 +125,7 @@ class VectorTest {
      * Test method for {@link primitives.Vector#normalize()}.
      */
     @Test
-    void testNormalize() {
+    public void testNormalize() {
         Vector u = v1.normalize();
         // ============ Equivalence Partitions Tests ==============
         // TN01: Test normalize result for a vector

@@ -10,7 +10,7 @@ import primitives.Vector;
 public class Sphere extends RadialGeometry {
 
     /**The center point of the sphere*/
-    private final Point center;
+    protected final Point center;
 
     /**
      * Constructs a radial geometry with the given radius and center point
@@ -23,7 +23,6 @@ public class Sphere extends RadialGeometry {
     }
 
     @Override
-    public Vector getNormal(Point p) {
-        return null;
-    }
+    public Vector getNormal(Point p)  {return (p.subtract(center)).normalize();}
+
 }

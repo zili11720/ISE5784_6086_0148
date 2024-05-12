@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for geometries.Tube class
  * @author Ayala
  */
-class TubeTest {
+public class TubeTest {
 
     /**
      * Test method for {@link geometries.Tube#getNormal(primitives.Point)}.
      */
     @Test
-    void testGetNormal() {
+    public void testGetNormal() {
         Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
         Tube tube = new Tube(Math.sqrt(2),ray);
 
