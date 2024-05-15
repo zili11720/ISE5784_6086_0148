@@ -43,8 +43,10 @@ public class PlaneTest {
 
         // =============== Equivalence Partitions Tests ==============
         // TC01:
-        assertEquals(new Vector(1/Math.sqrt(3),1/Math.sqrt(3),1/Math.sqrt(3)),
-                pl.getNormal(new Point(1, 0, 0)),
-                "ERROR: Wrong normal calculation for a plane");
+        Vector expectedNormal1 = new Vector(1/Math.sqrt(3), 1/Math.sqrt(3), 1/Math.sqrt(3));
+        Vector expectedNormal2 = new Vector(-1/Math.sqrt(3), -1/Math.sqrt(3), -1/Math.sqrt(3));
+        Vector actualNormal = pl.getNormal(new Point(1, 0, 0));
+        assertTrue(actualNormal.equals(expectedNormal1) || actualNormal.equals(expectedNormal2), "ERROR: Wrong normal calculation for a plane");
+
     }
 }

@@ -34,6 +34,10 @@ public class Point {
     @Override
     public String toString() {return " "+xyz;}
 
+    public double getX() { return this.xyz.d1; }
+    public double getY() { return this.xyz.d2; }
+    public double getZ() { return this.xyz.d3; }
+
     /**
      * Returns a new vector from a given point to the current point by subtracting the two points
      * @param other a point that will be the head of the new vector

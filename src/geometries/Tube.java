@@ -4,6 +4,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  *Represents a tube in 3D which is an infinite galilee
  * @author Ayala
@@ -28,5 +30,10 @@ public class Tube extends RadialGeometry{
         double t=axis.getDirection().dotProduct(p.subtract(axis.getHead()));
         Point point0 =axis.getHead().add(axis.getDirection().scale(t));
         return p.subtract(point0).normalize();
+    }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }

@@ -14,6 +14,7 @@ public class Double3 {
     /** Third number */
     final double                d3;
 
+
     /** Zero triad (0,0,0) */
     public static final Double3 ZERO = new Double3(0, 0, 0);
 

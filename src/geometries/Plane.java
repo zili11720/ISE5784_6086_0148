@@ -1,13 +1,16 @@
 package geometries;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 /**
  * This class represents a plane in a 3D space, which is an infinite flat surface
  * @author Ayala
  */
-public class Plane implements  Geometry {
+public class Plane implements Geometry  {
 
     /** A point on the plane */
    private final Point p0;
@@ -49,5 +52,10 @@ public class Plane implements  Geometry {
     @Override
     public Vector getNormal(Point p) {
         return getNormal();
+    }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }

@@ -1,7 +1,12 @@
 package geometries;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
+
+import static primitives.Util.alignZero;
 
 /**
  *Represents a sphere in 3D, which is a ball floating in the space
@@ -24,5 +29,11 @@ public class Sphere extends RadialGeometry {
 
     @Override
     public Vector getNormal(Point p)  {return (p.subtract(center)).normalize();}
+
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
+    }
 
 }
