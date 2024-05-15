@@ -1,5 +1,7 @@
 package primitives;
 
+import static primitives.Util.isZero;
+
 /**
  * Represents a ray in 3D space,defined by a starting point and a normalized vector for the direction
  * @author Zili
@@ -38,5 +40,15 @@ public class Ray {
     @Override
     public String toString() {
         return head+" "+direction;
+    }
+
+    public Point getPoint(double t) {
+        try {
+            if (isZero(t))
+                return head;
+            return head.add(direction.scale(t));
+        } catch (Exception e) {
+            return head;
+        }
     }
 }
