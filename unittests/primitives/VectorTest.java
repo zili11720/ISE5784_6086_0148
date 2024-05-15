@@ -82,7 +82,7 @@ public class VectorTest {
         // TC01: Test that length of cross-product is proper (orthogonal vectors taken
         // for simplicity)
         assertEquals(v1.length() * v3.length(), vr.length(), DELTA,
-                "ERROR: crossProduct() wrong result length");
+                "ERROR: crossProduct() wrong length result");
         // TC02: Test cross-product result orthogonality to its operands
         assertTrue(isZero(vr.dotProduct(v1)),
                 "ERROR: crossProduct() result is not orthogonal to its operands");
@@ -101,7 +101,7 @@ public class VectorTest {
     public void testLengthSquared() {
         // ============ Equivalence Partitions Tests ==============
         // TL01: Test length Squared result for a vector
-        assertEquals(9, v4.lengthSquared(),
+        assertEquals(9, v4.lengthSquared(),DELTA,
                 "ERROR: lengthSquared() wrong value");
     }
 
@@ -112,7 +112,7 @@ public class VectorTest {
     public void testLength() {
         // ============ Equivalence Partitions Tests ==============
         // TL01: Test length result for positive coordinate
-        assertEquals(3, v4.length(),
+        assertEquals(3, v4.length(),DELTA,
                 "ERROR: length() wrong value");
     }
 
@@ -125,9 +125,9 @@ public class VectorTest {
         // ============ Equivalence Partitions Tests ==============
         // TN01: Test normalize result for a vector
         assertEquals(new Vector(1 / Math.sqrt(14), 2 / Math.sqrt(14), 3 / Math.sqrt(14)),
-                v1.normalize(), "ERROR: Function normalize() returns wrong value");
+                u, "ERROR: Function normalize() returns wrong value");
         //TN02:test the length of a normalized vector
-        assertEquals(1,u.length(),"ERROR: the normalized vector is not a unit vector");
+        assertEquals(1,u.length(),DELTA,"ERROR: the normalized vector is not a unit vector");
         // =============== Boundary Values Tests ==================
         // TN11: Test vector multiplied by its normalized throws an exception
         assertThrows(IllegalArgumentException.class, () -> v1.crossProduct(u),

@@ -10,6 +10,12 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class PointTest {
 
+    /**
+     * Delta value for accuracy when comparing the numbers of type 'double' in
+     * assertEquals
+     */
+    private final double DELTA = 0.000001;
+
     Point  p0         = new Point(0,0,0);
     Point  p1         = new Point(1, 2, 3);
     Point  p2         = new Point(2, 4, 6);
@@ -47,7 +53,7 @@ public class PointTest {
         // TA11: Test that the adding of zero point is correct
         assertEquals(p1, p0.add(v1),"ERROR: Function add doesnt work correctly for zero point");
         // TA12: Test that the adding of opposites is correct
-        assertEquals(p0, p1.add(v1Opposite),"ERROR: (point + vector) = center of coordinates does not work correctly");
+        assertEquals(p0, p1.add(v1Opposite),"ERROR: (point + vector) = center of coordinates, does not work correctly");
 
     }
 
@@ -58,10 +64,10 @@ public class PointTest {
     public void testDistanceSquared() {
         // =======Equivalence Partitions Tests=======
         // TD01: Test that the distance between two points is calculated correctly
-        assertEquals(9, p1.distanceSquared(p3), "ERROR: squared distance between points is wrong");
+        assertEquals(9, p1.distanceSquared(p3), DELTA,"ERROR: squared distance between points is wrong");
         // =============== Boundary Values Tests ==================
         // TA11:Test point squared distance to itself
-        assertEquals(0, p1.distanceSquared(p1),"ERROR: point squared distance to itself is not zero");
+        assertEquals(0, p1.distanceSquared(p1),DELTA,"ERROR: point squared distance to itself is not zero");
     }
 
     /**
@@ -71,9 +77,9 @@ public class PointTest {
     public void distance() {
         // =======Equivalence Partitions Tests=======
         // TC01: Testing if the squared distance between two points is calculated correctly
-        assertEquals(3, p1.distance(p3) , "ERROR: distance between points is wrong");
+        assertEquals(3, p1.distance(p3) , DELTA,"ERROR: distance between points is wrong");
         // =============== Boundary Values Tests ==================
         // TA11:Test point distance to itself
-        assertEquals(0, p1.distanceSquared(p1),"ERROR: point distance to itself is not zero");
+        assertEquals(0, p1.distanceSquared(p1),DELTA,"ERROR: point distance to itself is not zero");
     }
 }
