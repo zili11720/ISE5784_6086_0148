@@ -9,14 +9,17 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-
+/**
+ * Unit tests for geometries.Geometries class
+ * @author Ayala
+ */
 public class GeometriesTest {
     /**
      * Test method for
      * {@link geometries.Geometries#findIntersections(primitives.Ray)}.
      */
     @Test
-    public void findIntersections() {
+    public void testFindIntersections() {
         Geometries geometries = new Geometries(new Sphere(0.5,new Point(0, 0, 2)),
                 new Polygon(new Point(1, 0, 0), new Point(0, 1, 0), new Point(-1, 0, 0), new Point(0, -1, 0)),
                 new Triangle(new Point(1, 0, 0), new Point(0, 1, 0), new Point(0, 0, 1)));

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for geometries.Plane class
- * @author Ayala
+ * @author Zili
  */
 public class PlaneTest {
 

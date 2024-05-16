@@ -42,6 +42,12 @@ public class Ray {
         return head+" "+direction;
     }
 
+    /**
+     * The method returns a point on the current ray starting
+     * from the ray's head + t unites in the direction of the ray
+     * @param t A scalar for number of unites to go in the direction of the ray
+     * @return a point on the ray
+     */
     public Point getPoint(double t) {
         try {
             if (isZero(t))

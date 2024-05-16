@@ -10,7 +10,7 @@ import static primitives.Util.isZero;
 
 /**
  *Represents a triangle in 3D space, defined by three points
- * @author Ayala
+ * @author Zili
  */
 public class Triangle extends Polygon{
     /**

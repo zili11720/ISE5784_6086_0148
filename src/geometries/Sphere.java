@@ -10,7 +10,7 @@ import static primitives.Util.alignZero;
 
 /**
  *Represents a sphere in 3D, which is a ball floating in the space
- * @author Ayala
+ * @author zili
  */
 public class Sphere extends RadialGeometry {
 

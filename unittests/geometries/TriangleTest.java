@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for geometries.Triangle class
- * @author Ayala
+ * @author  Ayala
  */
 public class TriangleTest {
 
@@ -30,7 +30,7 @@ public class TriangleTest {
      * {@link geometries.Polygon#findIntersections(primitives.Ray)}. /////
      */
     @Test
-    public void testfindIntersections() {
+    public void testFindIntersections() {
 
         Triangle triangle = new Triangle(new Point(0, 1, 0), new Point(2, 6, 0), new Point(5, 0, 0));
 
