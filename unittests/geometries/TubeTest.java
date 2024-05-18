@@ -20,7 +20,7 @@ public class TubeTest {
      */
     @Test
     public void testGetNormal() {
-        Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+        Ray ray = new Ray(Point.ZERO, new Vector(0, 0, 1));
         Tube tube = new Tube(Math.sqrt(2),ray);
 
         // =============== Equivalence Partitions Tests ==============
@@ -52,7 +52,7 @@ public class TubeTest {
         assertNull(tube1.findIntersections(ray), "ERROR: 0 intersections expected");
 
         // TC02: Ray's crosses the tube (2 points)
-        ray = new Ray(new Point(0, 0, 0), new Vector(2, 1, 1));
+        ray = new Ray(Point.ZERO, new Vector(2, 1, 1));
         List<Point> result = tube2.findIntersections(ray);
 
         assertNotNull(result, "ERROR: intersections expected");

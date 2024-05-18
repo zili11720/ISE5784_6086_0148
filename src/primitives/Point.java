@@ -8,7 +8,7 @@ public class Point {
     /**
      * 3-dimensional coordinates of this point.
      */
-    protected final Double3 xyz;
+    protected  Double3 xyz;
 
     /**
      * Constructs a new point according to 3 doubles
@@ -23,6 +23,8 @@ public class Point {
      * @param xyz a 3-dimensional point
      */
     Point(Double3 xyz) {this.xyz=xyz;}
+
+    public final static Point ZERO=new Point(0, 0, 0);
 
     @Override
     public boolean equals(Object obj) {

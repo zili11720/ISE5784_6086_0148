@@ -16,7 +16,7 @@ public class PointTest {
      */
     private final double DELTA = 0.000001;
 
-    private final Point  p0         = new Point(0,0,0);
+    private final Point  p0         = Point.ZERO;
     private final Point  p1         = new Point(1, 2, 3);
     private final Point  p2         = new Point(2, 4, 6);
     private final Point  p3         = new Point(2, 4, 5);
