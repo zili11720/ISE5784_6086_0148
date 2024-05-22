@@ -24,6 +24,10 @@ public class Triangle extends Polygon{
     @Override
     public List<Point> findIntersections(Ray ray) {
 
+        //If the ray doesn't intersect the plane return null
+        if(this.plane.findIntersections(ray)==null)
+            return null;
+
         // Check if the ray starts at one of the triangle's vertices
         Point rayP0 = ray.getHead();
         if (rayP0.equals(this.vertices.get(0)) || rayP0.equals(this.vertices.get(1))
@@ -49,9 +53,6 @@ public class Triangle extends Polygon{
         double vn1 = rayDir.dotProduct(n1);
         double vn2 = rayDir.dotProduct(n2);
         double vn3 = rayDir.dotProduct(n3);
-        if (isZero(vn1) || isZero(vn2) || isZero(vn3)) {
-            return null;
-        }
 
         // Check if the ray intersects the triangle
         if ((vn1 > 0 && vn2 > 0 && vn3 > 0) || (vn1 < 0 && vn2 < 0 && vn3 < 0)) {

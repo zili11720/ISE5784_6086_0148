@@ -53,8 +53,12 @@ public class Sphere extends RadialGeometry {
             return null;
 
         // If there are two intersections, return them as a list
-        if (t1 > 0 && t2 > 0)
-            return List.of(ray.getPoint(t1), ray.getPoint(t2));
+        if (t1 > 0 && t2 > 0){
+            List<Point> result= List.of(ray.getPoint(t1), ray.getPoint(t2));
+            if (result.get(0).getX() < result.get(1).getX())
+                result = List.of(result.get(1), result.get(0));
+            return result;
+        }
 
         // If there is one intersection, return it as a list
         if (t1 > 0)
