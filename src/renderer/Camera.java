@@ -16,10 +16,10 @@ import static primitives.Util.isZero;
  */
 public class Camera implements Cloneable {
 
-    private Point location; // Camera location
-    private Vector vTo; // Forward direction vector
-    private Vector vUp; // Up direction vector
-    private Vector vRight; // Right direction vector
+    private Point location=null; // Camera location
+    private Vector vTo=null; // Forward direction vector
+    private Vector vUp=null; // Up direction vector
+    private Vector vRight=null; // Right direction vector
     private double width = 0;
     private double height = 0;
     private double distance = 0;
@@ -28,17 +28,8 @@ public class Camera implements Cloneable {
      * Default constructor
      */
     private Camera() {
-    }//////////////////////
-
-
-    @Override
-    protected Camera clone() {
-        try {
-            return (Camera) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError(); // Can't happen
-        }
     }
+
 
     /**
      * Static method to get a new Builder object for constructing a Camera
@@ -152,10 +143,7 @@ public class Camera implements Cloneable {
                 throw new MissingResourceException("Missing rendering data", Camera.class.getName(), "view plane distance");
             }
 
-            return (Camera) camera.clone();
+            return (Camera) camera;//.clone();
         }
-
-
-
     }
 }

@@ -25,7 +25,8 @@ public class Triangle extends Polygon{
     public List<Point> findIntersections(Ray ray) {
 
         //If the ray doesn't intersect the plane return null
-        if(this.plane.findIntersections(ray)==null)
+        List<Point> intersections=this.plane.findIntersections(ray);
+        if(intersections==null)
             return null;
 
         // Check if the ray starts at one of the triangle's vertices
@@ -56,7 +57,7 @@ public class Triangle extends Polygon{
 
         // Check if the ray intersects the triangle
         if ((vn1 > 0 && vn2 > 0 && vn3 > 0) || (vn1 < 0 && vn2 < 0 && vn3 < 0)) {
-            return this.plane.findIntersections(ray);
+            return intersections;
         }
         return null;
     }
