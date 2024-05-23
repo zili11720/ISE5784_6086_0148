@@ -15,15 +15,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class IntegrationTest {
     /**
-     *
+     *Integration tests.
+     * Testing camera combined with constructRay for sphere,plane and triangle
      */
-    private  Camera.Builder cameraBuilder;
+    private final Camera.Builder cameraBuilder = Camera.getBuilder().setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0)).setVpSize(3, 3);
     /**
-     * an helper method to sum intersection
-     * @param camera
-     * @param body
-     * @param nX
-     * @param nY
+     * Helper method for constructing ray and calculating the number of intersections
+     * preventing needles repetitions
+     * @param camera camera watching the plane view
+     * @param body the shape the that's being intersected by the rays
+     * @param nX height of the view plain
+     * @param nY width of the view plane
      * @return sum of intersections
      */
     int sumIntersection(Camera camera, Intersectable body, int nX, int nY) {
@@ -41,15 +43,16 @@ public class IntegrationTest {
         return sum;
     }
 
+    /**
+     * Integration tests for sphere
+     */
     @Test
-    void shpereTest() {
-        cameraBuilder=Camera.getBuilder().setLocation( new Point(0, 0, 0)). new Vector(0, 0, -1), new Vector(0, 1, 0))
-                .setVPSize(3, 3)
-                .setVPDistance(1);
+    void sphereTest() {
+        //TC01: test sphere with 2 intersections
+        Camera camera1=cameraBuilder.setLocation( new Point(0, 0, 0)).setVpDistance(1).build();
         Sphere s1 = new Sphere( 1,new Point(0, 0, -3));
         int sum1 = sumIntersection(camera1, s1, 3, 3);
 
-        //TC01: test shpere with radius 1
         assertEquals(2, sum1,
                 "constructRay() and findIntersections() wrong result");
 
@@ -57,63 +60,65 @@ public class IntegrationTest {
         Camera camera2 = new Camera(new Point(0, 0, 0.5), new Vector(0, 0, -1), new Vector(0, 1, 0))
                 .setVPSize(3, 3)
                 .setVPDistance(1);
+        //TC02: test sphere with 18 intersections
+        Camera camera2 =cameraBuilder.setLocation( new Point(0, 0, 0.5)).setVpDistance(1).build();
         Sphere s2 = new Sphere(2.5,new Point(0, 0, -2.5));
         int sum2 = sumIntersection(camera2, s2, 3, 3);
 
-        //TC02: test shpere with radius 2.5
         assertEquals(18, sum2,
                 "constructRay() and findIntersections() wrong result");
 
 
+        //TC03: test sphere with 10 intersections
         Sphere s3 = new Sphere(2,new Point(0, 0, -2));
         int sum3 = sumIntersection(camera2, s3, 3, 3);
 
-        //TC03: test shpere with radius 2
         assertEquals(10, sum3,
                 "constructRay() and findIntersections() wrong result");
 
 
+        //TC04: test sphere with 9 intersections
         Sphere s4 = new Sphere(4,new Point(0, 0, -2));
         int sum4 = sumIntersection(camera2, s4, 3, 3);
 
-        //TC04: test shpere with radius 4
         assertEquals(9, sum4,
                 "constructRay() and findIntersections() wrong result");
 
+        //TC05: test sphere with 0 intersections
         Sphere s5 = new Sphere(0.5,new Point(0, 0, 1));
         int sum5 = sumIntersection(camera1, s5, 3, 3);
 
-        //TC05: test shpere with radius 5
         assertEquals(0, sum5,
                 "constructRay() and findIntersections() wrong result");
     }
 
+    /**
+     * Integration test for plane
+     */
     @Test
     void planeTest() {
-        Camera camera = new Camera(new Point(0, 0, 0), new Vector(0, 0, -1), new Vector(0, 1, 0))
-                .setVPSize(3, 3)
-                .setVPDistance(1);
+        Camera camera =cameraBuilder.setLocation( new Point(0, 0, 0)).setVpDistance(1).build();
 
+        //TC01: plane parallel to view plane
         Plane p1 = new Plane(new Point(1, 1, -3), new Point(2,1,-3),  new Point(1,2,-3));
         int sum1 = sumIntersection(camera, p1, 3, 3);
 
-        //TC01: test plane parallar to view plane
         assertEquals(9, sum1,
                 "constructRay() and findIntersections() wrong result");
 
 
+        //TC02: plane not parallel to view plane
         Plane p2 = new Plane(new Point(0, 0, -3), new Point(1, 0, -3),new Point(0, 1, -2.5));
         int sum2 = sumIntersection(camera, p2, 3, 3);
 
-        //TC02: test plane not parallar to view plane
         assertEquals(9, sum2,
                 "constructRay() and findIntersections() wrong result");
 
 
+        //TC03: plane is not parallel to view plane
         Plane p3 = new Plane(new Point(0, 0, -3), new Point(1, 0, -3), new Point(0, 1, -2));
         int sum3 = sumIntersection(camera, p3, 3, 3);
 
-        //TC03: test plane not parallar to view plane
         assertEquals(6, sum3,
                 "constructRay() and findIntersections() wrong result");
 
@@ -122,21 +127,20 @@ public class IntegrationTest {
 
     @Test
     void TriangleTest() {
-        Camera camera = new Camera(new Point(0, 0, 0), new Vector(0, 0, -1), new Vector(0, 1, 0))
-                .setVPSize(3, 3)
-                .setVPDistance(1);
+        Camera camera = cameraBuilder.setLocation( new Point(0, 0, 0)).setVpDistance(1).build();
+
+        //TC01: test plane is not parallel to view plane- 1 intersection
         Triangle t1 = new Triangle(new Point(0, 1, -2), new Point(1, -1, -2), new Point(-1, -1, -2));
         int sum1 = sumIntersection(camera, t1, 3, 3);
 
-        //TC01: test plane not parallar to view plane
         assertEquals(1, sum1,
                 "constructRay() and findIntersections() wrong result");
 
 
+        //TC02: test plane is not parallel to view plane- 2 intersection
         Triangle t2 = new Triangle(new Point(0, 20, -2), new Point(1, -1, -2), new Point(-1, -1, -2));
         int sum2 = sumIntersection(camera, t2, 3, 3);
 
-        //TC02: test plane not parallar to view plane
         assertEquals(2, sum2,
                 "constructRay() and findIntersections() wrong result");
     }
