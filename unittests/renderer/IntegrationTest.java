@@ -57,9 +57,6 @@ public class IntegrationTest {
                 "constructRay() and findIntersections() wrong result");
 
 
-        Camera camera2 = new Camera(new Point(0, 0, 0.5), new Vector(0, 0, -1), new Vector(0, 1, 0))
-                .setVPSize(3, 3)
-                .setVPDistance(1);
         //TC02: test sphere with 18 intersections
         Camera camera2 =cameraBuilder.setLocation( new Point(0, 0, 0.5)).setVpDistance(1).build();
         Sphere s2 = new Sphere(2.5,new Point(0, 0, -2.5));
