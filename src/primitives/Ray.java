@@ -1,5 +1,7 @@
 package primitives;
 
+import java.util.List;
+
 import static primitives.Util.isZero;
 
 /**
@@ -56,5 +58,25 @@ public class Ray {
         } catch (Exception e) {
             return head;
         }
+    }
+
+    /**
+     * Returns the closest point to the head of the ray
+     * @param points a list of given points
+     * @return the closest point to the head of the ray
+     */
+    public Point findClosestPoint(List<Point> points) {
+        if (points.isEmpty())
+            return null;
+        double minDistance = Double.POSITIVE_INFINITY;
+        Point closest = null;
+        for (var p : points) {
+            double distance = head.distance(p);
+            if (distance <  minDistance) {
+                minDistance = distance;
+                closest = p;
+            }
+        }
+        return closest;
     }
 }
