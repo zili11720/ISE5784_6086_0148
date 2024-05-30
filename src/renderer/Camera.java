@@ -1,8 +1,11 @@
 package renderer;
 
+import primitives.Color;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
+
+import java.awt.*;
 import java.util.MissingResourceException;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
@@ -22,6 +25,11 @@ public class Camera implements Cloneable {
     private double width = 0;
     private double height = 0;
     private double distance = 0;
+
+    //The image writer for writing the rendered image
+    private ImageWriter imageWriter;
+    //The ray tracer for tracing the rays from the camera to the scene
+    private RayTracerBase rayTracer;
 
     /**
      * Default private constructor
@@ -54,8 +62,9 @@ public class Camera implements Cloneable {
         double xJ = alignZero((j - (nX - 1) / 2d) * Rx);        // move pc Xj pixels
 
         Point PIJ = pc;
-        if(!isZero(xJ))  PIJ = PIJ.add(vRight.scale(xJ));
-        if(!isZero(yJ))  PIJ = PIJ.add(vUp.scale(yJ));
+        if(!isZero(xJ))  PIJ = PIJ.add(vRight.scale(xJ));//move right ass needed
+        if(!isZero(yJ))  PIJ = PIJ.add(vUp.scale(yJ));//move left as needed
+        //else stay in thr middle
 
         return new Ray(location, PIJ.subtract(location));
     }
@@ -133,6 +142,34 @@ public class Camera implements Cloneable {
         }
 
         /**
+         * Sets the image writer for the camera.
+         *
+         * @param imageWriter The image writer to set.
+         * @return This camera instance.
+         */
+        public Builder setImageWriter(ImageWriter imageWriter) {
+            if (imageWriter == null) {
+                throw new IllegalArgumentException("ImageWriter cannot be null");
+            }
+            camera.imageWriter = imageWriter;
+            return this;
+        }
+
+        /**
+         * Sets the ray tracer for the camera.
+         *
+         * @param rayTracer The ray tracer to set.
+         * @return This camera instance.
+         */
+        public Builder setRayTracer(RayTracerBase rayTracer) {
+            if (rayTracer == null) {
+                throw new IllegalArgumentException("RayTracer cannot be null");
+            }
+            camera.rayTracer = rayTracer;
+            return this;
+        }
+
+        /**
          * Builds the Camera object.
          * @return the constructed Camera object.
          * @throws MissingResourceException if any required field is missing.
@@ -155,6 +192,12 @@ public class Camera implements Cloneable {
             if (camera.distance == 0.0) {
                 throw new MissingResourceException(missingData, Camera.class.getName(), "view plane distance");
             }
+            if(camera.imageWriter == null) {
+                throw new MissingResourceException(missingData, Camera.class.getName(), "imageWriter");
+            }
+            if(camera.rayTracer == null) {
+                throw new MissingResourceException(missingData, Camera.class.getName(), "rayTracer");
+            }
 
             try {
                 return (Camera) camera.clone();
@@ -162,5 +205,72 @@ public class Camera implements Cloneable {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /**
+     * Renders the image by iterating through each pixel in the view plane and
+     * calling castray for each pixel
+     * @throws MissingResourceException if either the image writer or the ray tracer base are not set.
+     */
+    public Camera renderImage() {
+        if (imageWriter == null)
+            throw new MissingResourceException("Camera resource not set", "Camera", "imageWriter");
+
+        if (rayTracer == null)
+            throw new MissingResourceException("Camera resource not set", "Camera", "rayTracer");
+
+        int nX = imageWriter.getNx();
+        int nY = imageWriter.getNy();
+
+        for (int j = 0; j < nX; j++) {
+            for (int i = 0; i < nY; i++) {
+                castRay(j, i, nX, nY);
+            }
+        }
+        return this;
+    }
+    /**
+     * Writes a grid of pixels to the image writer, with a given interval between
+     * the grid lines and a specified color.
+     * @throws  MissingResourceException if the image writer is not set
+     * @param interval the interval between grid lines
+     * @param color    the color to use for the grid lines
+     */
+    public Camera printGrid(int interval, primitives.Color color){
+        if (imageWriter == null)
+            throw new MissingResourceException("Camera resource not set", "Camera", "Image writer");
+        // === running on the view plane===//
+        int nX = imageWriter.getNx();
+        int nY = imageWriter.getNy();
+
+        for (int j = 0; j < nX; ++j)
+            for (int i = 0; i < nY; ++i)
+                if (i % interval == 0 || j % interval == 0)
+                    imageWriter.writePixel(j, i, color);
+        return this;
+    }
+
+    /**
+     * Writes the image to file by delegating to image writer
+     * @throws MissingResourceException if the image writer is not set.
+     */
+    public Camera writeToImage() throws MissingResourceException {
+        if (imageWriter == null)
+            throw new MissingResourceException("Camera resource not set", "Camera", "ImageWriter");
+        imageWriter.writeToImage();
+        return this;
+    }
+
+    /**
+     *Casts a ray through a specified pixel and coloring the pixel using the imageWriter
+     * @param j The x-coordinate of the pixel
+     * @param i The y-coordinate of the pixel
+     * @param nX number of pixels on the width of the view plane.
+     * @param nY number of pixels on the height of the view plane.
+     */
+    private void castRay(int j, int i,int nX, int nY) {
+        Ray ray = constructRay(nX,nY,j,i);
+        Color color= this.rayTracer.traceRay(ray);
+        this.imageWriter.writePixel(j, i, color);
     }
 }

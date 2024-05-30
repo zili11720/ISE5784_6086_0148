@@ -5,7 +5,10 @@ import lighting.AmbientLight;
 import primitives.Color;
 
 /**
- * pds
+ * A PDS represents a 3D scene that includes a name, background color,
+ * ambient light, and geometries
+ *
+ * @author Zili and Ayala
  */
 public class Scene {
 
@@ -19,16 +22,17 @@ public class Scene {
     public Geometries geometries = new Geometries();
 
     /**
-     *
-     * @param name
+     * Constructs a new scene with the given name
+     * @param name the name of the scene
      */
     public Scene(String name){
         this.name=name;
     }
 
     /**
-     *
-     * @param background
+     * Sets the background color of the scene.
+     * @param background the background color to set
+     * @return this scene
      */
     public Scene setBackground(Color background) {
         this.background = background;
@@ -36,8 +40,9 @@ public class Scene {
     }
 
     /**
-     *
-     * @param ambientLight
+     * Sets the ambient light of the scene.
+     * @param ambientLight the ambient light to set
+     * @return this scene
      */
     public Scene setAmbientLight(AmbientLight ambientLight) {
         this.ambientLight = ambientLight;
@@ -45,9 +50,9 @@ public class Scene {
     }
 
     /**
-     *
-     * @param geometries
-     * @return
+     * Sets the geometries of the scene.
+     * @param geometries the geometries to set
+     * @return this scene
      */
     public Scene setGeometries(Geometries geometries) {
         this.geometries = geometries;
