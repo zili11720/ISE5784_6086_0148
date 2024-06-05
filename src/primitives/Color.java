@@ -75,7 +75,7 @@ public class Color {
         for (Color c : colors) {
             rr += c.rgb.d1;
             rg += c.rgb.d2;
-            rb += c.rgb.d3;
+            rb += c.rgb.d3; 
         }
         return new Color(rr, rg, rb);
     }
