@@ -13,7 +13,7 @@ import static primitives.Util.isZero;
  * This class represents a plane in a 3D space, which is an infinite flat surface
  * @author Ayala
  */
-public class Plane implements Geometry  {
+public class Plane extends Geometry  {
 
     /** A point on the plane */
    private final Point p0;
@@ -58,7 +58,7 @@ public class Plane implements Geometry  {
     }
 
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         // Calculate the dot product of the plane's normal vector with the ray's direction vector
         double nv = normal.dotProduct(ray.getDirection());
         if (isZero(nv)) { // if the dot product is zero, the ray is parallel to the plane and doesn't
@@ -69,11 +69,8 @@ public class Plane implements Geometry  {
             // Calculate the parameter t at which the ray intersects the plane
             Vector pSubtractP0 = p0.subtract(ray.getHead());
             double t = alignZero((normal.dotProduct(pSubtractP0)) / nv);
-            if (t <= 0) { // if t is negative or zero, the intersection point is behind the ray's origin
-                return null;
-            }
-            // Return a list containing the intersection point
-            return List.of(ray.getPoint(t));
+            // if t is negative or zero, the intersection point is behind the ray's origin
+            return t <= 0 ? null : List.of(new GeoPoint(this, ray.getPoint(t)));
         } catch (Exception ex) { // if an exception occurs during the calculation, return null
             return null;
         }

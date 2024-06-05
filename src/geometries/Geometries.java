@@ -12,7 +12,7 @@ import java.util.List;
  *A class for a group of different geometries using the composite design pattern
  * @author Zili
  */
-public class Geometries implements Intersectable{
+public class Geometries extends Intersectable{
 
     /**
      *A list of different geometric objects in the scene
@@ -41,15 +41,15 @@ public class Geometries implements Intersectable{
         geometricBodies.addAll(Arrays.asList(geometries));
     }
 
+
     @Override
-    public List<Point> findIntersections(Ray ray) {
-        List<Point> intersections = null;
-        //Find the intersections for every shape
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+        List<GeoPoint> intersections = null;
         for (Intersectable geometry : this.geometricBodies) {
-            List<Point> tmpIntersections = geometry.findIntersections(ray);
+            List<GeoPoint> tmpIntersections = geometry.findGeoIntersections(ray);
             if (tmpIntersections != null) {
-                if (intersections == null) {//for the first intersection found
-                    intersections = new LinkedList<Point>();
+                if (intersections == null) {
+                    intersections = new LinkedList<GeoPoint>();
                 }
                 intersections.addAll(tmpIntersections);
             }

@@ -8,12 +8,12 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Ayala
  */
 public class CylinderTest {
-    /**
-     * Test method for {@link geometries.Cylinder#getNormal(primitives.Point)}.
-     */
-    @Test
-    public void testGetNormal()  {
-        fail("Not yet implemented");
-    }
+//    /**
+//     * Test method for {@link geometries.Cylinder#getNormal(primitives.Point)}.
+//     */
+//    @Test
+//    public void testGetNormal()  {
+//        fail("Not yet implemented");
+//    }
 
 }

@@ -31,39 +31,33 @@ public class Sphere extends RadialGeometry {
     public Vector getNormal(Point p)  {return (p.subtract(center)).normalize();}
 
 
+
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+        Point p0 = ray.getHead();
 
-        // If the beginning point of the ray is on the sphere center, return the point on the sphere's radius
-        if (ray.getHead().equals(center))
-            return List.of(ray.getPoint(radius));
+        // If the beginning point of the ray is on the sphere center, return the point
+        // on the sphere's radius
+        if (p0.equals(center))
+            return List.of(new GeoPoint(this, ray.getPoint(radius)));
 
-        Vector u = center.subtract(ray.getHead());
+        Vector u = center.subtract(p0);
         double tM = alignZero(ray.getDirection().dotProduct(u));
-        double d = alignZero(Math.sqrt(u.lengthSquared() - tM * tM));
-        double tH = alignZero(Math.sqrt(radius * radius - d * d));
-        double t1 = alignZero(tM + tH);
-        double t2 = alignZero(tM - tH);
+        double d2 = u.lengthSquared() - tM * tM; // squared d
+        double delta2 = alignZero(radius*radius - d2);
 
         // If there are no intersections, return null
-        if (d >= radius)
+        if (delta2 <= 0)
             return null;
 
-        if (t1 <= 0 && t2 <= 0)
+        double tH = Math.sqrt(delta2);
+
+        double t2 = alignZero(tM + tH);
+        if (t2 <= 0)
             return null;
 
-        // If there are two intersections, return them as a list
-        if (t1 > 0 && t2 > 0){
-            List<Point> result= List.of(ray.getPoint(t1), ray.getPoint(t2));
-            if (result.get(0).getX() < result.get(1).getX())
-                result = List.of(result.get(1), result.get(0));
-            return result;
-        }
-
-        // If there is one intersection, return it as a list
-        if (t1 > 0)
-            return List.of(ray.getPoint(t1));
-        else
-            return List.of(ray.getPoint(t2));
+        double t1 = alignZero(tM - tH);
+        return t1 <= 0 ? List.of(new GeoPoint(this, ray.getPoint(t2))) // P2 only
+                : List.of(new GeoPoint(this, ray.getPoint(t1)), new GeoPoint(this, ray.getPoint(t2))); // P1 & P2
     }
 }
