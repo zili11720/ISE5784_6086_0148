@@ -173,13 +173,14 @@ public class LightTest {
                 .writeToImage();
     }
 
+    //BONUS
     /** Produce a picture of a sphere lighted by a narrow spotlight */
     @Test
     public void sphereSpotSharp() {
         scene1.geometries.add(sphere);
         scene1.lights
                 .add(new SpotLight(sphereLightColor, sphereLightPosition, new Vector(1, 1, -0.5))
-                        .setkL(0.001).setkQ(0.00004));  //.setNarrowBeam(10));
+                        .setkL(0.001).setkQ(0.00004).setNarrowBeam(10));
 
         camera1.setImageWriter(new ImageWriter("lightSphereSpotSharp", 500, 500))
                 .build()
@@ -187,17 +188,56 @@ public class LightTest {
                 .writeToImage();
     }
 
+    //BONUS
     /** Produce a picture of two triangles lighted by a narrow spotlight */
     @Test
     public void trianglesSpotSharp() {
         scene2.geometries.add(triangle1, triangle2);
         scene2.lights.add(new SpotLight(trianglesLightColor, trianglesLightPosition, trianglesLightDirection)
-                .setkL(0.001).setkQ(0.00004));//.setNarrowBeam(10));
+                .setkL(0.001).setkQ(0.00004).setNarrowBeam(10));
 
         camera2.setImageWriter(new ImageWriter("lightTrianglesSpotSharp", 500, 500))
                 .build()
                 .renderImage()
                 .writeToImage();
+    }
+
+    /**
+     * Tests multiple light sources in the sphere test.
+     */
+    @Test
+    void SphereMultipleLights() {
+        scene1.geometries.add(sphere);
+        scene1.lights.add(new DirectionalLight(sphereLightColor, sphereLightDirection));
+        scene1.lights.add(new PointLight(new Color(0, 255, 0), new Vector(70, 70, -1000))
+                .setkL(0.000001).setkQ(0.000002));
+        scene1.lights.add(new SpotLight(new Color(500, 600, 100), new Point(-10, -10, 4), new Vector(3, 3, -2))
+                .setkL(0.001).setkQ(0.0001));
+
+        camera1.setImageWriter(new ImageWriter("lightSphereMultiple", 500, 500))
+                .build()
+                .renderImage()
+                .writeToImage();
+
+    }
+
+    /**
+     * Tests multiple light sources in the triangles test.
+     */
+    @Test
+    void trianglesMultipleLights() {
+        scene2.geometries.add(triangle1, triangle2);
+        scene2.lights.add(new DirectionalLight(trianglesLightColor, new Vector(60, 60, -1000)));
+        scene2.lights.add(new PointLight(trianglesLightColor, new Vector(70, 70, -1000))
+                .setkL(0.001).setkQ(0.0002));
+        scene2.lights.add(new SpotLight(trianglesLightColor, trianglesLightPosition, trianglesLightDirection)
+                .setkL(0.001).setkQ(0.0001));
+
+        camera2.setImageWriter(new ImageWriter("lightTrianglesMultiple", 500, 500))
+                .build()
+                .renderImage()
+                .writeToImage();
+
     }
 
 }

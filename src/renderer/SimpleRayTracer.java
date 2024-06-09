@@ -57,7 +57,9 @@ public class SimpleRayTracer extends RayTracerBase {
         Vector v = ray.getDirection();
         Vector n = gp.geometry.getNormal(gp.point);
         double nv = alignZero(n.dotProduct(v));
-        if (nv == 0)  return Color.BLACK;
+        if (nv == 0)
+            return Color.BLACK;
+
         Material material = gp.geometry.getMaterial();
         Color color =gp.geometry.getEmission() ;
         for (LightSource lightSource : scene.lights) {
@@ -73,8 +75,7 @@ public class SimpleRayTracer extends RayTracerBase {
     }
 
     /**
-     * Calculates the specular color at a point on a geometry.
-     *
+     * Calculates the specular color at a point on a geometry
      * @param material    the material of the geometry
      * @param normal      the normal of the geometry
      * @param lightVector the light vector
@@ -90,8 +91,7 @@ public class SimpleRayTracer extends RayTracerBase {
     }
 
     /**
-     * Calculates the diffusive color at a point on a geometry.
-     *
+     * Calculates the diffusive color at a point on a geometry
      * @param material the material of the geometry
      * @param nl       the dot product of the normal and light vector
      * @return the diffusive color at the given point
