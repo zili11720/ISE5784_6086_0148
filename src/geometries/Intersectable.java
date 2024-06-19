@@ -53,7 +53,7 @@ public abstract class Intersectable {
         public boolean equals(Object obj) {
             if (this == obj) return true;
             if (!(obj instanceof GeoPoint geoP)) return false;
-            return Objects.equals(geometry, geoP.geometry) && point.equals(geoP.point);
+            return this.geometry== geoP.geometry && point.equals(geoP.point);
         }
 
         @Override
@@ -64,7 +64,6 @@ public abstract class Intersectable {
 
     /**
      * Returns a list of intersection points between a given ray and the object
-     *
      * @param ray The ray to intersect with the GeoPoint.
      * @return A list of GeoPoints that are the intersections of the ray with the object.
      */
@@ -74,7 +73,7 @@ public abstract class Intersectable {
 
     /**
      * Returns a list of intersection points between a given ray and the object. This
-     * method should be implemented by the subclasses to provide their own intersection logic.
+     * Method should be implemented by the subclasses to provide their own intersection logic.
      * @param ray The ray to intersect with the object.
      * @return A list of GeoPoints that are the intersections of the ray with the  object
      */

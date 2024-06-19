@@ -4,6 +4,10 @@ import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
 
+/**
+ * Represents a pointLight source in a lighting system.
+ * @author Zili and Ayala
+ */
 public class PointLight extends Light implements LightSource{
 
     /** Represents the position of the point light source. */

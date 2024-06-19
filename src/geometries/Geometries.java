@@ -45,10 +45,11 @@ public class Geometries extends Intersectable{
     @Override
     public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         List<GeoPoint> intersections = null;
+        //Find the intersections for every shape
         for (Intersectable geometry : this.geometricBodies) {
             List<GeoPoint> tmpIntersections = geometry.findGeoIntersections(ray);
             if (tmpIntersections != null) {
-                if (intersections == null) {
+                if (intersections == null) {//for the first intersection found
                     intersections = new LinkedList<GeoPoint>();
                 }
                 intersections.addAll(tmpIntersections);
