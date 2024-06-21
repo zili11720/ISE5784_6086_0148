@@ -67,7 +67,7 @@ public abstract class Intersectable {
      * @param ray The ray to intersect with the GeoPoint.
      * @return A list of GeoPoints that are the intersections of the ray with the object.
      */
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
+    public final List<GeoPoint> findGeoIntersections(Ray ray) {
         return findGeoIntersectionsHelper(ray);
     }
 

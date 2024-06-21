@@ -208,10 +208,10 @@ public class LightTest {
     @Test
     void SphereMultipleLights() {
         scene1.geometries.add(sphere);
-        scene1.lights.add(new DirectionalLight(sphereLightColor, sphereLightDirection));
-        scene1.lights.add(new PointLight(new Color(0, 255, 0), new Vector(70, 70, -1000))
-                .setkL(0.000001).setkQ(0.000002));
-        scene1.lights.add(new SpotLight(new Color(500, 600, 100), new Point(-10, -10, 4), new Vector(3, 3, -2))
+        scene1.lights.add(new DirectionalLight(new Color(250,0 , 0), sphereLightDirection));
+        scene1.lights.add(new PointLight(new Color(0, 200, 0), new Point(0, 10, 10))
+                .setkL(0.001).setkQ(0.000002));
+        scene1.lights.add(new SpotLight(sphereLightColor, new Point(-100, -70, 50), new Vector(1, -1, -2))
                 .setkL(0.001).setkQ(0.0001));
 
         camera1.setImageWriter(new ImageWriter("lightSphereMultiple", 500, 500))
@@ -227,8 +227,8 @@ public class LightTest {
     @Test
     void trianglesMultipleLights() {
         scene2.geometries.add(triangle1, triangle2);
-        scene2.lights.add(new DirectionalLight(trianglesLightColor, new Vector(60, 60, -1000)));
-        scene2.lights.add(new PointLight(trianglesLightColor, new Vector(70, 70, -1000))
+        scene2.lights.add(new DirectionalLight(new Color(0, 0, 200), new Vector(60, 60, -1000)));
+        scene2.lights.add(new PointLight(new Color(200, 0, 0), new Point(1, 10, -10))
                 .setkL(0.001).setkQ(0.0002));
         scene2.lights.add(new SpotLight(trianglesLightColor, trianglesLightPosition, trianglesLightDirection)
                 .setkL(0.001).setkQ(0.0001));
