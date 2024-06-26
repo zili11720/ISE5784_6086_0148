@@ -1,5 +1,5 @@
 package geometries;
-
+  
 import primitives.Color;
 import primitives.Material;
 import primitives.Point;
