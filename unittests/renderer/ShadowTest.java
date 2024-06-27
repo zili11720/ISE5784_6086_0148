@@ -22,7 +22,7 @@ public class ShadowTest {
     private final Scene scene      = new Scene("Test scene");
     /** Camera builder of the tests */
     private final Camera.Builder camera     = Camera.getBuilder()
-            .setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0)) /////////to check
+            .setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
             .setLocation(new Point(0, 0, 1000)).setVpDistance(1000)
             .setVpSize(200, 200)
             .setRayTracer(new SimpleRayTracer(scene));

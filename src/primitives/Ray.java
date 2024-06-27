@@ -13,10 +13,13 @@ import geometries.Intersectable.GeoPoint;
  * @author Zili
  */
 public class Ray {
+
     /**The starting point of the ray*/
     private final Point head;
     /**The direction of the ray*/
     private final Vector direction;
+
+    private static final double DELTA = 0.1;
 
     public Point getHead() {
         return head;
@@ -33,6 +36,18 @@ public class Ray {
     public Ray(Point head, Vector direction) {
         this.head = head;
         this.direction = direction.normalize();
+    }
+
+    /**
+     * Constructs a ray with a given starting point, direction, and surface normal.
+     * @param head The starting point of the ray.
+     * @param direction The direction of the ray (must be already normalized)
+     * @param normal The surface normal at the starting point.
+     */
+    public Ray(Point head, Vector direction, Vector normal) {
+        Vector delta = normal.scale(normal.dotProduct(direction) > 0 ? DELTA : -DELTA);
+        this.head = head.add(delta);
+        this.direction = direction;
     }
 
     @Override
