@@ -1,8 +1,12 @@
 package renderer;
 
+import geometries.Geometry;
+import geometries.Plane;
 import geometries.Sphere;
 import geometries.Triangle;
 import lighting.AmbientLight;
+import lighting.DirectionalLight;
+import lighting.PointLight;
 import lighting.SpotLight;
 import org.junit.jupiter.api.Test;
 import primitives.*;
@@ -96,4 +100,5 @@ public class ReflectionRefractionTest {
                 .renderImage()
                 .writeToImage();
     }
+
 }

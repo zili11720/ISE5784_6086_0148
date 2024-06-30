@@ -14,8 +14,8 @@ import static primitives.Util.alignZero;
  * abstract class. This class is responsible for tracing rays in the scene and
  * calculating their color. The class implements the traceRay method, which
  * returns the color of the closest point of intersection with an object in the
- * scene. The class also implements the calcColor method, which calculates the
- * color at a given point in the scene.
+ * scene. The color is being calculated considering any elements such as refraction,
+ * reflection etc
  *
  * @author Zili and AYala
  *
@@ -26,6 +26,7 @@ public class SimpleRayTracer extends RayTracerBase {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     //Stopping conditions of reflection recursion
     private static final double MIN_CALC_COLOR_K = 0.001;
+
     private static final Double3 INIT_CALC_COLOR_K = Double3.ONE;
 
     /**
@@ -51,8 +52,7 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the color at the given point
      */
     private Color calcColor(GeoPoint geoPoint, Ray ray) {
-        return scene.ambientLight.getIntensity().add(calcColor(geoPoint, ray, MAX_CALC_COLOR_LEVEL, INIT_CALC_COLOR_K));
-        //return calcColor(geoPoint, ray, MAX_CALC_COLOR_LEVEL, INIT_CALC_COLOR_K).add(scene.ambientLight.getIntensity());
+        return calcColor(geoPoint, ray, MAX_CALC_COLOR_LEVEL, INIT_CALC_COLOR_K).add(scene.ambientLight.getIntensity());
     }
     /**
      * Calculates the color at a given point in the scene, taking into account local and global effects.
@@ -88,7 +88,7 @@ public class SimpleRayTracer extends RayTracerBase {
             if (nl * nv > 0) { // sing(nl) ==sing(nv)
                 Double3 ktr=transparency(gp,lightSource,lightVector,n);
                 if (!(ktr.product(k).lowerThan(MIN_CALC_COLOR_K))) {
-                    Color lightIntensity = lightSource.getIntensity(gp.point);
+                    Color lightIntensity = lightSource.getIntensity(gp.point).scale(ktr);
                     color = color.add(lightIntensity.scale(calcDiffusive(material, nl)),
                             lightIntensity.scale(calcSpecular(material, n, lightVector, nl, v)));
                 }
@@ -106,7 +106,6 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return The calculated color due to global effects at the given point.
      */
     private Color calcGlobalEffects(GeoPoint gp, Ray ray, int level, Double3 k) {
-        Color color = Color.BLACK;
         Vector v = ray.getDirection();
         Vector n = gp.geometry.getNormal(gp.point);
         Material material = gp.geometry.getMaterial();
@@ -168,6 +167,7 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the diffusive color at the given point
      */
     private Double3 calcDiffusive(Material material, double nl) {
+
         return material.kD.scale(Math.abs(nl));
     }
 
