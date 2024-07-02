@@ -45,6 +45,7 @@ public class Ray {
      * @param normal The surface normal at the starting point.
      */
     public Ray(Point head, Vector direction, Vector normal) {
+        //keep Don't Repeat Yourself principal
         Vector delta = normal.scale(normal.dotProduct(direction) > 0 ? DELTA : -DELTA);
         this.head = head.add(delta);
         this.direction = direction;

@@ -35,7 +35,7 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     public SimpleRayTracer(Scene scene) {super(scene);}
 
-    // Constant for ray origin offset
+    // Constant for ray origin offset for shadows
     private static final double DELTA = 0.1;
 
 
@@ -46,7 +46,7 @@ public class SimpleRayTracer extends RayTracerBase {
     }
 
     /**
-     * Calculates the color of a given point in the scene.
+     * Calculates the color of a given point in the scene recursively.
      * @param geoPoint the point to calculate the color for
      * @param ray      the ray that intersects the point
      * @return the color at the given point
@@ -76,7 +76,7 @@ public class SimpleRayTracer extends RayTracerBase {
         Vector v = ray.getDirection();
         Vector n = gp.geometry.getNormal(gp.point);
         double nv = alignZero(n.dotProduct(v));
-        if (nv == 0)
+        if (nv == 0)//הוקטורים מאונכים
             return Color.BLACK;
 
         Material material = gp.geometry.getMaterial();
@@ -141,6 +141,7 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     private GeoPoint findClosestIntersection(Ray ray) {
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(ray);
+        //let ray calculate the distance
         return intersections == null ? null : ray.findClosestGeoPoint(intersections);
     }
 
@@ -180,7 +181,7 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return The reflected ray.
      */
     private Ray constructReflectedRay(GeoPoint gp, Vector v, Vector n) {
-        //starting point of the ray moves on the geometrie's normal towards the new ray
+        //starting point of the ray moves on the geometie's normal towards the new ray
         Vector reflectedVector = v.subtract(n.scale(2 * v.dotProduct(n)));
         return new Ray(gp.point, reflectedVector, n);
     }
@@ -208,16 +209,20 @@ public class SimpleRayTracer extends RayTracerBase {
     @SuppressWarnings("unused")
     private boolean unshaded(GeoPoint gp, Vector l, Vector n, LightSource lightSource) {
         Vector lightDirection = l.scale(-1); // from point to light source
+        //add delta in ctr to prevent the head of the ray to count as a shadow
+        // and to prevent mistakes du to small miscalculations (mottled affect)
         Ray lightRay = new Ray(gp.point, lightDirection, n);
+        //Point point = gp.point.add(n.scale(Util.alignZero(n.dotProduct(lightDirection)) < 0 ? DELTA : -DELTA));
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
 
         if (intersections == null)
             return true;
-        double distance = lightSource.getDistance(gp.point);
+        double distance = lightSource.getDistance(gp.point);//distance from light source to the point
         for (GeoPoint intersection : intersections) {
+            //make sure the object is between the light source and the point
             if (alignZero(intersection.point.distance(gp.point)) <= distance
                     //only objects with kt=0 will cast a shade
-                    && intersection.geometry.getMaterial().kT.equals(Double3.ZERO))
+                   && intersection.geometry.getMaterial().kT.equals(Double3.ZERO))
                 return false;
         }
         return true;
@@ -233,7 +238,7 @@ public class SimpleRayTracer extends RayTracerBase {
     private Double3 transparency(GeoPoint geoPoint, LightSource ls, Vector l, Vector n)
     {
         Vector lightDirection = l.scale(-1); // from point to light source
-        Ray lightRay = new Ray(geoPoint.point, lightDirection, n);
+        Ray lightRay = new Ray(geoPoint.point, lightDirection, n);//use ctr that adds delta
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
         if (intersections == null)
             return Double3.ONE;
@@ -249,6 +254,4 @@ public class SimpleRayTracer extends RayTracerBase {
         return ktr;
 
     }
-
-
 }

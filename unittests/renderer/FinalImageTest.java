@@ -19,10 +19,10 @@ public class FinalImageTest {
         final Scene scene         = new Scene("Final Test scene");
 
         Material groundM = new Material().setKd(0.6).setKs(0.4),
-                seaM = new Material().setKd(0.2).setKs(0.9).setShininess(3000).setkR(0.8).setkT(0.8),
-                rockM = new Material().setKd(0.2).setKs(0.6),
+                seaM = new Material().setKd(0.2).setKs(2).setShininess(3000).setkR(5).setkT(0.8),
+                rockM = new Material().setKd(0.2),
                 cloudM = new Material().setKd(0.5).setKs(0.6).setShininess(300).setkT(10),
-                sunM = new Material().setKd(0.2).setKs(0.2).setShininess(900).setkT(3);
+                sunM = new Material().setKd(0.2).setKs(4).setShininess(900).setkT(3);
 
         // Ground
         scene.geometries.add(new Polygon(
@@ -44,9 +44,9 @@ public class FinalImageTest {
         scene.geometries.add(new Sphere(40d,new Point(-100, 140, 100)).setEmission(new Color(255, 200, 20)).setMaterial(sunM));
 
         // Swing (Tube as a straight line from top to bottom)
-        scene.geometries.add(new Tube(2d, new Ray(new Point(100, -100, -100), new Vector(0, -1, 0))).setEmission(new Color(101, 67, 133)));
+        scene.geometries.add(new Tube(3d, new Ray(new Point(100, -100, -100), new Vector(0, -1, 0))).setEmission(new Color(101, 67, 133)));
 
-        scene.geometries.add(new Tube(2d, new Ray(new Point(200, -20, -40), new Vector(0, -1, 0))).setEmission(new Color(101, 67, 133)));
+        scene.geometries.add(new Tube(3d, new Ray(new Point(200, -20, -40), new Vector(0, -1, 0))).setEmission(new Color(101, 67, 133)));
 
         scene.geometries.add(new Polygon(
                 new Point(60, -130, 100),
