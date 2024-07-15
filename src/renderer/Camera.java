@@ -303,14 +303,14 @@ public class Camera implements Cloneable {
 
 
     /**
-     * Go over all the pixels in the grid and construct a bim of rays through
-     * every pixel using the function constructRaysThroughPixel
+     * construct a bim of rays through a given pixel, treat every pixel like a mini grid
+     * use the help function constructRaysThroughPixel
      * @param nX amount of columns (row width)
      * @param nY amount of rows (column width)
      * @param j pixel index for column
      * @param i pixel index for row
      * @param raysAmount number of rays to construct through every pixel
-     * @return
+     * @return a list of rays constructed through a pixel
      */
     public java.util.List<Ray> constructBeamOfRays(int nX, int nY, int j, int i, int raysAmount) {
         // The distance between the screen and the camera cannot be 0
@@ -323,10 +323,10 @@ public class Camera implements Cloneable {
         if (numOfRays == 1)
             return java.util.List.of(constructRay(nX, nY, j, i));
 
-        double Ry = height / nY;
-        double Rx = width / nX;
-        double Yi = (i - (nY - 1) / 2d) * Ry;
-        double Xj = (j - (nX - 1) / 2d) * Rx;
+        double Ry = height / nY; //height of each pixel
+        double Rx = width / nX;  ////width of each pixel
+        double Yi = (i - (nY - 1) / 2d) * Ry; //y of center coordinate
+        double Xj = (j - (nX - 1) / 2d) * Rx; //x of the center coordinate
 
         double PRy = Ry / numOfRays; // height distance between each ray
         double PRx = Rx / numOfRays; // width distance between each ray
@@ -343,34 +343,31 @@ public class Camera implements Cloneable {
     }
 
     /**
-     *Construct a bim of rays through every pixel as if it is a mini grid.
-     * @param Ry height of each grid block we divided the pixel into
-     * @param Rx width of each grid block we divided the pixel into
+     *Construct a ray through a mini pixel in a pixel mini grid.
+     * @param Ry height of each mini grid block we divided the pixel into
+     * @param Rx width of each mini grid block we divided the pixel into
      * @param yi distance of original pixel from (0,0) on Y axis
      * @param xj distance of original pixel from (0,0) on X axis
-     * @param j j coordinate of small "pixel"
-     * @param i i coordinate of small "pixel"
-     * @return beam of rays through pixel
+     * @param j j coordinate of mini "pixel"
+     * @param i i coordinate of mini "pixel"
+     * @return ray constructed through a mini pixel
      */
     private Ray constructRaysThroughPixel(double Ry,double Rx, double yi, double xj, int j, int i){
-        Point Pc =location.add(vTo.scale(distance)); //the center of the screen point
+        Point Pc =location.add(vTo.scale(distance)); //the center of the screen
 
-        double y_sample_i =  (i *Ry + Ry/2d); //The pixel starting point on the y axis
-        double x_sample_j=   (j *Rx + Rx/2d); //The pixel starting point on the x axis
+        double y_sample_i =  (i *Ry + Ry/2d); //The X coordinate of the sub-pixel within the pixel's mini-grid
+        double x_sample_j=   (j *Rx + Rx/2d); //The Y coordinate of the sub-pixel within the pixel's mini-grid
 
-        Point Pij = Pc; //The point at the pixel through which a beam is fired
-        //Moving the point through which a beam is fired on the x axis
+        Point Pij = Pc; //The point on the pixel to construct a ray from
         if (!isZero(x_sample_j + xj))
-        {
             Pij = Pij.add(vRight.scale(x_sample_j + xj));
-        }
+
         //Moving the point through which a beam is fired on the y axis
         if (!isZero(y_sample_i + yi))
-        {
             Pij = Pij.add(vUp.scale(-y_sample_i -yi ));
-        }
+
         Vector Vij = Pij.subtract(location);
-        return new Ray(location,Vij);//create the ray throw the point we calculate here
+        return new Ray(location,Vij);
     }
 
 }
