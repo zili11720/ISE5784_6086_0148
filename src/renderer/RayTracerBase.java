@@ -4,6 +4,8 @@ import primitives.Color;
 import primitives.Ray;
 import scene.Scene;
 
+import java.util.List;
+
 /**
  * The RayTracerBase class represents a base class for ray-tracing algorithms in
  * a 3D scene.
@@ -29,4 +31,12 @@ public abstract class RayTracerBase {
      * @return the color of the first hit object in the scene, or black if there is no hit
      */
     public abstract Color traceRay(Ray ray);
+
+    /**
+     * Traces a given list of ray and returns the average of colors of the first hit object in the
+     * scene, or black if there is no hit.
+     * @param rays the rays to trace
+     * @return the average color of the first hit object in the scene of each ray, or black if there is no hit
+     */
+    public abstract Color traceRay(List<Ray> rays);
 }

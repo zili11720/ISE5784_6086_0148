@@ -117,9 +117,113 @@ public class FinalImageTest {
         cameraBuilder.setLocation(new Point(0, 0, 10000)).setVpDistance(10000)
                 .setVpSize(1000, 1000)
                 .setImageWriter(new ImageWriter("finalImage", 400, 400))
+                .setNumOfRays(1000)
                 .build()
                 .renderImage()
                 .writeToImage();
     }
+
+    @Test
+    public void teddyBearImage() {
+        final Scene scene         = new Scene("Final Test scene");
+
+        //materials for the scene
+        Material surfaceM = new Material().setKd(0.2).setKs(2),
+                eyesM=new Material(),
+                cloudM = new Material().setKd(2).setKs(0.6).setkT(10),
+                teddyM = new Material().setKd(1).setKs(6).setkR(0.08).setShininess(300);
+
+        Color cloudColor = new Color(255, 178, 200);
+
+        //surface---------------------------------------------------------------------------
+        scene.geometries.add(
+                new Triangle(new Point(-500, -500, 0), new Point(150, -150, -200),
+                        new Point(75, 75, -230)).setEmission(new Color(15, 220, 220)).setMaterial(surfaceM),
+                new Triangle(new Point(-150, -150, 0), new Point(-70, 70, -200),
+                        new Point(75, 75, -230)).setEmission(new Color(15, 220, 220)).setMaterial(surfaceM));
+
+        //teddy bear------------------------------------------------------------------------------
+        Color teddy=new Color(231, 84, 128);
+        scene.geometries.add(new Sphere(20d,new Point(0, 52, 200)).setEmission(teddy).setMaterial(teddyM));
+        scene.geometries.add(new Sphere(28d,new Point(0, 10, 200)).setEmission(teddy).setMaterial(teddyM));
+        scene.geometries.add(new Sphere(16d,new Point(0, 10, 220)).setEmission(new Color(255,255,100)));
+        //ears
+        scene.geometries.add(new Sphere(7d,new Point(-15, 70, 190)).setEmission(teddy).setMaterial(teddyM));
+        scene.geometries.add(new Sphere(7d,new Point(15, 70, 190)).setEmission(teddy).setMaterial(teddyM));
+        scene.geometries.add(new Sphere(4,new Point(-15, 70, 195)).setEmission(Color.BLACK).setMaterial(teddyM));
+        scene.geometries.add(new Sphere(4d,new Point(15, 70, 195)).setEmission(Color.BLACK).setMaterial(teddyM));
+        //ands
+        scene.geometries.add(new Sphere(10d,new Point(-30, 25, 180)).setEmission(teddy).setMaterial(teddyM));
+        scene.geometries.add(new Sphere(10d,new Point(30, 25, 180)).setEmission(teddy).setMaterial(teddyM));
+        scene.geometries.add(new Sphere(6d,new Point(-33, 25, 200)).setEmission(teddy).setMaterial(teddyM));
+        scene.geometries.add(new Sphere(6d,new Point(33, 25, 200)).setEmission(teddy).setMaterial(teddyM));
+        //legs
+        scene.geometries.add(new Sphere(12d,new Point(-15, -20, 200)).setEmission(teddy).setMaterial(teddyM));
+        scene.geometries.add(new Sphere(12d,new Point(15, -20, 200)).setEmission(teddy).setMaterial(teddyM));
+        //eyes
+        scene.geometries.add(new Sphere(4d,new Point(-7, 55, 220)).setEmission(Color.BLACK).setMaterial(eyesM));
+        scene.geometries.add(new Sphere(4d,new Point(7, 55, 220)).setEmission(Color.BLACK).setMaterial(eyesM));
+        scene.geometries.add(new Sphere(3d,new Point(-7, 54, 225)).setEmission(cloudColor));
+        scene.geometries.add(new Sphere(3d,new Point(7, 54, 225)).setEmission(cloudColor));
+        scene.geometries.add(new Sphere(2d,new Point(-7, 53, 230)).setEmission(Color.BLACK));
+        scene.geometries.add(new Sphere(2d,new Point(7, 53, 230)).setEmission(Color.BLACK));
+        //nose
+        scene.geometries.add(new Triangle(
+                        new Point(0, 45, 220),
+                        new Point(-2.6, 49, 220),
+                        new Point(2.6, 49, 220)).setEmission(Color.BLACK).setMaterial(eyesM));
+        //mouse
+        scene.geometries.add(new Sphere(2d,new Point(0, 41, 220)).setEmission(Color.BLACK));
+        //clouds----------------------------------------------------------------------
+
+        // Cloud 1
+        scene.geometries.add(new Sphere(10d, new Point(-50, 60, 100)).setEmission(cloudColor).setMaterial(cloudM));
+        scene.geometries.add(new Sphere(8d, new Point(-58, 60, 100)).setEmission(cloudColor).setMaterial(cloudM));
+        scene.geometries.add(new Sphere(8d, new Point(-42, 60, 100)).setEmission(cloudColor).setMaterial(cloudM));
+        // Cloud 2
+        scene.geometries.add(new Sphere(10d, new Point(60, 65, 100)).setEmission(cloudColor).setMaterial(cloudM));
+        scene.geometries.add(new Sphere(8d, new Point(52, 65, 100)).setEmission(cloudColor).setMaterial(cloudM));
+        scene.geometries.add(new Sphere(8d, new Point(68, 65, 100)).setEmission(cloudColor).setMaterial(cloudM));
+        // Cloud 3
+        scene.geometries.add(new Sphere(10d, new Point(80, 35, 100)).setEmission(cloudColor).setMaterial(cloudM));
+        scene.geometries.add(new Sphere(8d, new Point(72, 35, 100)).setEmission(cloudColor).setMaterial(cloudM));
+        scene.geometries.add(new Sphere(8d, new Point(88, 35, 100)).setEmission(cloudColor).setMaterial(cloudM));
+
+        // Cloud 4
+        scene.geometries.add(new Sphere(10d, new Point(-72, 40, 100)).setEmission(cloudColor).setMaterial(cloudM));
+        scene.geometries.add(new Sphere(8d, new Point(-80, 40, 100)).setEmission(cloudColor).setMaterial(cloudM));
+        scene.geometries.add(new Sphere(8d, new Point(-66, 40, 100)).setEmission(cloudColor).setMaterial(cloudM));
+
+        // Swing ----------------------------------------------------------------------------------
+        scene.geometries.add(new Tube(1d, new Ray(new Point(35, 200, 190), new Vector(0, 1, 0))).setEmission(new Color(101, 67, 133)));
+
+        scene.geometries.add(new Tube(1d, new Ray(new Point(-35, 200, 190), new Vector(0, 1, 0))).setEmission(new Color(101, 67, 133)));
+
+        scene.geometries.add(new Polygon(
+                new Point(-50, -10, 200),
+                new Point(50, -10, 200),
+                new Point(50, -20, 200),
+                new Point(-50, -20, 200)).setEmission(new Color(101, 67, 33)));
+
+        //lights--------------------------------------------------------------
+        scene.setAmbientLight(new AmbientLight(new Color(255,0,0), 0.15));
+        scene.lights.add(
+                new SpotLight(new Color(60, 0, 0), new Point(0, 10, 800), new Vector(0, 0, -1)));
+        scene.lights.add(new PointLight(new Color(255, 100, 0), new Point(-30, 10, 230))
+                .setkL(0.01).setkQ(0.0002));
+        scene.lights.add(new DirectionalLight(new Color(40, 0, 0), new Vector(0, 1, 0)));
+
+        final Camera.Builder cameraBuilder = Camera.getBuilder()
+                .setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
+                .setRayTracer(new SimpleRayTracer(scene));
+        cameraBuilder.setLocation(new Point(0, 0, 1000)).setVpDistance(1000)
+                .setVpSize(200, 200)
+                .setImageWriter(new ImageWriter("teddyBear", 600, 600))
+                .setNumOfRays(1)
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
+
 
 }

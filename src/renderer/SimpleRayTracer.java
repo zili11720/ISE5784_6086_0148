@@ -45,6 +45,18 @@ public class SimpleRayTracer extends RayTracerBase {
         return closestPoint==null ? scene.background: calcColor(closestPoint,ray);
     }
 
+    @Override
+    public Color traceRay(List<Ray> rays)
+    {
+        if(rays == null)
+            return scene.background;
+        Color color = scene.background;
+        for (Ray ray : rays)
+            color = color.add(traceRay(ray));
+        color = color.add(scene.ambientLight.getIntensity());
+        return color.reduce(rays.size());
+    }
+
     /**
      * Calculates the color of a given point in the scene recursively.
      * @param geoPoint the point to calculate the color for
@@ -230,7 +242,7 @@ public class SimpleRayTracer extends RayTracerBase {
     /**
      * Calculates the transparency factor for a given geometric point and light source.
      * @param geoPoint    The geometric point in the scene.
-     * @param l     The direction from the point to the light source.
+     * @param l     The direction from the light source to the point.
      * @param n     The normal vector at the point.
      * @param ls The light source.
      * @return The transparency factor (ktr) as a Double3 vector.
@@ -252,6 +264,5 @@ public class SimpleRayTracer extends RayTracerBase {
             }
         }
         return ktr;
-
     }
 }

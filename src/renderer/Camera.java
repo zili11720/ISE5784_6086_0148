@@ -6,6 +6,8 @@ import primitives.Ray;
 import primitives.Vector;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.MissingResourceException;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
@@ -30,6 +32,8 @@ public class Camera implements Cloneable {
     private ImageWriter imageWriter;
     //The ray tracer for tracing the rays from the camera to the scene
     private RayTracerBase rayTracer;
+    //The number of rays constructed using a bim of rays for antialiasing
+    private int numOfRays=1;
 
     /**
      * Default private constructor
@@ -170,6 +174,20 @@ public class Camera implements Cloneable {
         }
 
         /**
+         * A setter function for parameter num of rays
+         *
+         * @param numOfRays number of rays to cast through each pixel
+         * * @return This camera instance, for builder pattern
+         * */
+        public Builder setNumOfRays(int numOfRays) {
+            if(numOfRays == 0)
+                camera.numOfRays=1;
+            else
+                camera.numOfRays = numOfRays;
+            return this;
+        }
+
+        /**
          * Builds the Camera object.
          * @return the constructed Camera object.
          * @throws MissingResourceException if any required field is missing.
@@ -198,6 +216,9 @@ public class Camera implements Cloneable {
             if(camera.rayTracer == null) {
                 throw new MissingResourceException(missingData, Camera.class.getName(), "rayTracer");
             }
+            if(camera.numOfRays == 0) {
+                throw new MissingResourceException(missingData, Camera.class.getName(), "numOfRays");
+            }
 
             try {
                 return (Camera) camera.clone();
@@ -209,7 +230,7 @@ public class Camera implements Cloneable {
 
     /**
      * Renders the image by iterating through each pixel in the view plane and
-     * calling castray for each pixel
+     * calling cast ray for each pixel
      * @throws MissingResourceException if either the image writer or the ray tracer base are not set.
      */
     public Camera renderImage() {
@@ -224,7 +245,13 @@ public class Camera implements Cloneable {
 
         for (int j = 0; j < nX; j++) {
             for (int i = 0; i < nY; i++) {
-                castRay(j, i, nX, nY);
+                if(numOfRays==1)
+                      castRay(j, i, nX, nY);
+                else {
+                    List<Ray> rays = constructBeamOfRays(nX, nY, j, i, numOfRays);
+                    Color rayColor = rayTracer.traceRay(rays);
+                    imageWriter.writePixel(j, i, rayColor);
+                }
             }
         }
         return this;
@@ -273,4 +300,77 @@ public class Camera implements Cloneable {
         Color color= this.rayTracer.traceRay(ray);
         this.imageWriter.writePixel(j, i, color);
     }
+
+
+    /**
+     * Go over all the pixels in the grid and construct a bim of rays through
+     * every pixel using the function constructRaysThroughPixel
+     * @param nX amount of columns (row width)
+     * @param nY amount of rows (column width)
+     * @param j pixel index for column
+     * @param i pixel index for row
+     * @param raysAmount number of rays to construct through every pixel
+     * @return
+     */
+    public java.util.List<Ray> constructBeamOfRays(int nX, int nY, int j, int i, int raysAmount) {
+        // The distance between the screen and the camera cannot be 0
+        if (isZero(distance)) {
+            throw new IllegalArgumentException("distance cannot be 0");
+        }
+
+        int numOfRays = (int) Math.floor(Math.sqrt(raysAmount)); // number of rays in each row or column
+
+        if (numOfRays == 1)
+            return java.util.List.of(constructRay(nX, nY, j, i));
+
+        double Ry = height / nY;
+        double Rx = width / nX;
+        double Yi = (i - (nY - 1) / 2d) * Ry;
+        double Xj = (j - (nX - 1) / 2d) * Rx;
+
+        double PRy = Ry / numOfRays; // height distance between each ray
+        double PRx = Rx / numOfRays; // width distance between each ray
+
+        List<Ray> sample_rays = new ArrayList<>();
+
+        for (int row = 0; row < numOfRays; ++row) {
+            for (int column = 0; column < numOfRays; ++column) {
+                sample_rays.add(constructRaysThroughPixel(PRy, PRx, Yi, Xj, row, column));
+            }
+        }
+        sample_rays.add(constructRay(nX, nY, j, i)); // add the center screen ray
+        return sample_rays;
+    }
+
+    /**
+     *Construct a bim of rays through every pixel as if it is a mini grid.
+     * @param Ry height of each grid block we divided the pixel into
+     * @param Rx width of each grid block we divided the pixel into
+     * @param yi distance of original pixel from (0,0) on Y axis
+     * @param xj distance of original pixel from (0,0) on X axis
+     * @param j j coordinate of small "pixel"
+     * @param i i coordinate of small "pixel"
+     * @return beam of rays through pixel
+     */
+    private Ray constructRaysThroughPixel(double Ry,double Rx, double yi, double xj, int j, int i){
+        Point Pc =location.add(vTo.scale(distance)); //the center of the screen point
+
+        double y_sample_i =  (i *Ry + Ry/2d); //The pixel starting point on the y axis
+        double x_sample_j=   (j *Rx + Rx/2d); //The pixel starting point on the x axis
+
+        Point Pij = Pc; //The point at the pixel through which a beam is fired
+        //Moving the point through which a beam is fired on the x axis
+        if (!isZero(x_sample_j + xj))
+        {
+            Pij = Pij.add(vRight.scale(x_sample_j + xj));
+        }
+        //Moving the point through which a beam is fired on the y axis
+        if (!isZero(y_sample_i + yi))
+        {
+            Pij = Pij.add(vUp.scale(-y_sample_i -yi ));
+        }
+        Vector Vij = Pij.subtract(location);
+        return new Ray(location,Vij);//create the ray throw the point we calculate here
+    }
+
 }
