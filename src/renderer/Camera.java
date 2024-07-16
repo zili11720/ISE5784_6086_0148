@@ -315,12 +315,12 @@ public class Camera implements Cloneable {
     public java.util.List<Ray> constructBeamOfRays(int nX, int nY, int j, int i, int raysAmount) {
         // The distance between the screen and the camera cannot be 0
         if (isZero(distance)) {
-            throw new IllegalArgumentException("distance cannot be 0");
+            throw new IllegalArgumentException("View plane distance from camera must be positive");
         }
 
-        int numOfRays = (int) Math.floor(Math.sqrt(raysAmount)); // number of rays in each row or column
+        int miniGridLength = (int) Math.floor(Math.sqrt(raysAmount)); // number of rays in each row or column
 
-        if (numOfRays == 1)
+        if (miniGridLength == 1)
             return java.util.List.of(constructRay(nX, nY, j, i));
 
         double Ry = height / nY; //height of each pixel
@@ -328,13 +328,13 @@ public class Camera implements Cloneable {
         double Yi = (i - (nY - 1) / 2d) * Ry; //y of center coordinate
         double Xj = (j - (nX - 1) / 2d) * Rx; //x of the center coordinate
 
-        double PRy = Ry / numOfRays; // height distance between each ray
-        double PRx = Rx / numOfRays; // width distance between each ray
+        double PRy = Ry / miniGridLength; // height distance between each ray
+        double PRx = Rx / miniGridLength; // width distance between each ray
 
         List<Ray> sample_rays = new ArrayList<>();
 
-        for (int row = 0; row < numOfRays; ++row) {
-            for (int column = 0; column < numOfRays; ++column) {
+        for (int row = 0; row < miniGridLength; ++row) {
+            for (int column = 0; column < miniGridLength; ++column) {
                 sample_rays.add(constructRaysThroughPixel(PRy, PRx, Yi, Xj, row, column));
             }
         }
@@ -362,7 +362,7 @@ public class Camera implements Cloneable {
         if (!isZero(x_sample_j + xj))
             Pij = Pij.add(vRight.scale(x_sample_j + xj));
 
-        //Moving the point through which a beam is fired on the y axis
+        //Moving the point through which a beam is casted on the y axis
         if (!isZero(y_sample_i + yi))
             Pij = Pij.add(vUp.scale(-y_sample_i -yi ));
 
