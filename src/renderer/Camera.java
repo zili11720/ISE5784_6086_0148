@@ -320,9 +320,6 @@ public class Camera implements Cloneable {
 
         int miniGridLength = (int) Math.floor(Math.sqrt(raysAmount)); // number of rays in each row or column
 
-        if (miniGridLength == 1)
-            return java.util.List.of(constructRay(nX, nY, j, i));
-
         double Ry = height / nY; //height of each pixel
         double Rx = width / nX;  ////width of each pixel
         double Yi = (i - (nY - 1) / 2d) * Ry; //y of center coordinate
@@ -338,7 +335,6 @@ public class Camera implements Cloneable {
                 sample_rays.add(constructRaysThroughPixel(PRy, PRx, Yi, Xj, row, column));
             }
         }
-        sample_rays.add(constructRay(nX, nY, j, i)); // add the center screen ray
         return sample_rays;
     }
 
@@ -355,16 +351,16 @@ public class Camera implements Cloneable {
     private Ray constructRaysThroughPixel(double Ry,double Rx, double yi, double xj, int j, int i){
         Point Pc =location.add(vTo.scale(distance)); //the center of the screen
 
-        double y_sample_i =  (i *Ry + Ry/2d); //The X coordinate of the sub-pixel within the pixel's mini-grid
-        double x_sample_j=   (j *Rx + Rx/2d); //The Y coordinate of the sub-pixel within the pixel's mini-grid
+        double miniY =  (i *Ry + Ry/2d); //The Y coordinate of the sub-pixel within the pixel's mini-grid
+        double miniX=   (j *Rx + Rx/2d); //The X coordinate of the sub-pixel within the pixel's mini-grid
 
         Point Pij = Pc; //The point on the pixel to construct a ray from
-        if (!isZero(x_sample_j + xj))
-            Pij = Pij.add(vRight.scale(x_sample_j + xj));
+        if (!isZero(miniX + xj))
+            Pij = Pij.add(vRight.scale(miniX + xj));
 
         //Moving the point through which a beam is casted on the y axis
-        if (!isZero(y_sample_i + yi))
-            Pij = Pij.add(vUp.scale(-y_sample_i -yi ));
+        if (!isZero(miniY + yi))
+            Pij = Pij.add(vUp.scale(-miniY -yi ));
 
         Vector Vij = Pij.subtract(location);
         return new Ray(location,Vij);

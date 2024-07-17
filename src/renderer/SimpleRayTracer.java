@@ -46,14 +46,12 @@ public class SimpleRayTracer extends RayTracerBase {
     }
 
     @Override
-    public Color traceRay(List<Ray> rays)
-    {
+    public Color traceRay(List<Ray> rays) {
         if(rays == null)
             return scene.background;
-        Color color = scene.background;
+        Color color=scene.ambientLight.getIntensity();
         for (Ray ray : rays)
             color = color.add(traceRay(ray));
-        color = color.add(scene.ambientLight.getIntensity());
         return color.reduce(rays.size());
     }
 
