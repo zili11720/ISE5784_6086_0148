@@ -219,7 +219,9 @@ public class FinalImageTest {
         cameraBuilder.setLocation(new Point(0, 0, 1000)).setVpDistance(1000)
                 .setVpSize(200, 200)
                 .setImageWriter(new ImageWriter("teddyBear", 600, 600))
-                .setNumOfRays(1)
+                .setNumOfRays(1000)
+                .setadaptive(true)
+                .setMultithreading(30)
                 .build()
                 .renderImage()
                 .writeToImage();

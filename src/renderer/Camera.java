@@ -7,6 +7,7 @@ import primitives.Vector;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
 import static primitives.Util.alignZero;
@@ -34,6 +35,12 @@ public class Camera implements Cloneable {
     private RayTracerBase rayTracer;
     //The number of rays constructed using a bim of rays for antialiasing
     private int numOfRays=1;
+
+    //variables for acceleration
+    private int threadsCount = 0; // -2 auto, -1 range/stream, 0 no threads, 1+ number of threads
+    private final int SPARE_THREADS = 2; // Spare threads if trying to use all the cores
+    private double printInterval = 0; // printing progress percentage interval
+    private boolean adaptive = false;
 
     /**
      * Default private constructor
@@ -188,6 +195,34 @@ public class Camera implements Cloneable {
         }
 
         /**
+         * set the adaptive
+         *
+         * @return the Camera object
+         */
+        public Builder setadaptive(boolean adaptive) {
+            camera.adaptive = adaptive;
+            return this;
+        }
+
+        public Builder setMultithreading(int threads) {
+            if (threads < -2)
+                throw new IllegalArgumentException("Multithreading must be -2 or higher");
+            if (threads >= -1)
+                camera.threadsCount = threads;
+            else { // == -2
+                int cores = Runtime.getRuntime().availableProcessors() - camera.SPARE_THREADS;
+                camera.threadsCount = cores <= 2 ? 1 : cores;
+            }
+            return this;
+        }
+
+        public Builder setDebugPrint(double interval) {
+            camera.printInterval = interval;
+            return this;
+        }
+
+
+        /**
          * Builds the Camera object.
          * @return the constructed Camera object.
          * @throws MissingResourceException if any required field is missing.
@@ -243,19 +278,180 @@ public class Camera implements Cloneable {
         int nX = imageWriter.getNx();
         int nY = imageWriter.getNy();
 
-        for (int j = 0; j < nX; j++) {
-            for (int i = 0; i < nY; i++) {
-                if(numOfRays==1)
-                      castRay(j, i, nX, nY);
-                else {
-                    List<Ray> rays = constructBeamOfRays(nX, nY, j, i, numOfRays);
-                    Color rayColor = rayTracer.traceRay(rays);
-                    imageWriter.writePixel(j, i, rayColor);
-                }
+//        for (int j = 0; j < nX; j++) {
+//            for (int i = 0; i < nY; i++) {
+//                if(numOfRays==1)
+//                      castRay(j, i, nX, nY);
+//                else {
+//                    List<Ray> rays = constructBeamOfRays(nX, nY, j, i, numOfRays);
+//                    Color rayColor = rayTracer.traceRay(rays);
+//                    imageWriter.writePixel(j, i, rayColor);
+//                }
+//            }
+//        }
+        Pixel.initialize(nY, nX, 1);
+
+        if (!adaptive) {
+            while (threadsCount-- > 0) {//number of threads to be used for rendering
+                new Thread(() -> {//This creates and starts a new thread
+                    for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())//A new Pixel object is created,The loop continues as long as there are more pixels to process.
+                        imageWriter.writePixel(pixel.col, pixel.row, rayTracer.traceRay(constructRay(nX, nY, pixel.col, pixel.row)));//For each pixel, imageWriter.writePixel() is called to write the color of the pixel traced by rayTracer.traceRay()
+                }).start();
             }
+            Pixel.waitToFinish();// starting all the threads,until all pixels to be processed
+        } else {//adaptive rendering should be used.
+            while (threadsCount-- > 0) {
+                new Thread(() -> {
+                    for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())
+                        imageWriter.writePixel(pixel.col, pixel.row, AdaptiveSuperSampling(nX, nY, pixel.col, pixel.row,numOfRays));//AdaptiveSuperSampling() to determine the color of each pixel.
+                }).start();
+            }
+            Pixel.waitToFinish();
         }
         return this;
     }
+    /**
+     * Checks the color of the pixel with the help of individual rays and averages between them and only
+     * if necessary continues to send beams of rays in recursion
+     * @param nX Pixel length
+     * @param nY Pixel width
+     * @param j The position of the pixel relative to the y-axis
+     * @param i The position of the pixel relative to the x-axis
+     * @param numOfRays The amount of rays sent
+     * @return Pixel color
+     */
+    private Color AdaptiveSuperSampling(int nX, int nY, int j, int i,  int numOfRays)  {
+        Vector Vright = vRight;
+        Vector Vup = vUp;
+        Point cameraLoc = location;
+        int numOfRaysInRowCol = (int)Math.floor(Math.sqrt(numOfRays));//number of rays in each row and column
+        if(numOfRaysInRowCol == 1)  return rayTracer.traceRay(constructRay(nX, nY, j, i));
+
+        Point pIJ = getCenterOfPixel(nX, nY, j, i);
+
+        //calculate the height and width of a pixel in the view plane
+        double rY = alignZero(height / nY);
+        // the ratio Rx = w/Nx, the width of the pixel
+        double rX = alignZero(width / nX);
+        //these lines calculate the height (PRy) and width (PRx) of the sub-pixels
+        double PRy = rY/numOfRaysInRowCol;
+        double PRx = rX/numOfRaysInRowCol;
+        return AdaptiveSuperSamplingRec(pIJ, rX, rY, PRx, PRy,cameraLoc,Vright, Vup,null);//he result is the color of the pixel determined through adaptive super-sampling
+    }
+
+    private Point centerScreenPoint() {
+        return location.add(vTo.scale(distance));
+    }
+    /**
+     * Checks the color of the pixel with the help of individual rays and averages between
+     * them and only if necessary continues to send beams of rays in recursion
+     * @param centerP center pixl
+     * @param Width Length
+     * @param Height width
+     * @param minWidth min Width
+     * @param minHeight min Height
+     * @param cameraLoc Camera location
+     * @param Vright Vector right
+     * @param Vup vector up
+     * @param prePoints pre Points
+     * @return Pixel color
+     */
+    public Color AdaptiveSuperSamplingRec(Point centerP, double Width, double Height, double minWidth, double minHeight, Point cameraLoc, Vector Vright, Vector Vup, List<Point> prePoints) {
+
+        //If the width or height of the current area is less than twice the minimum
+        //width or height, trace a single ray from the camera to the center of the area and return the color at that point
+        if (Width < minWidth * 2 || Height < minHeight * 2) {
+            return rayTracer.traceRay(new Ray(cameraLoc, centerP.subtract(cameraLoc))) ;
+        }
+
+        List<Point> nextCenterPList = new LinkedList<>();//will hold the center points for the next level of recursion.
+        List<Point> cornersList = new LinkedList<>();//will hold the corner points of the current area.
+        List<primitives.Color> colorList = new LinkedList<>();// will hold the colors traced from the camera to each corner point.
+        Point tempCorner;
+        Ray tempRay;
+        for (int i = -1; i <= 1; i += 2){//This nested loop iterates over the four corners of the current pixel. For each corner:
+            for (int j = -1; j <= 1; j += 2) {
+                tempCorner = centerP.add(Vright.scale(i * Width / 2)).add(Vup.scale(j * Height / 2));
+                cornersList.add(tempCorner);//For each corner, calculate the corner point and add it to cornersList.
+                if (prePoints == null || !isInList(prePoints, tempCorner)) {//If the corner point hasn't been processed before,
+                    tempRay = new Ray(cameraLoc, tempCorner.subtract(cameraLoc));//a ray is traced from the camera to the corner point,
+                    nextCenterPList.add(centerP.add(Vright.scale(i * Width / 4)).add(Vup.scale(j * Height / 4)));//The center point for the next recursion is added to nextCenterPList
+                    colorList.add(rayTracer.traceRay(tempRay));//// and the resulting color is added to colorList
+                }
+            }
+        }
+
+
+        if (nextCenterPList == null || nextCenterPList.size() == 0) {//If there are no next center points to process the method returns black.
+            return primitives.Color.BLACK;
+        }
+
+        //This checks if all the colors in colorList are almost equal. If they are, the method returns the first color.
+        //This is an optimization to avoid unnecessary recursion when the colors are already similar.
+        boolean isAllEquals = true;
+        primitives.Color tempColor = colorList.get(0);
+        for (primitives.Color color : colorList) {
+            if (!tempColor.isAlmostEquals(color))
+                isAllEquals = false;
+        }
+        if (isAllEquals && colorList.size() > 1)
+            return tempColor;
+
+        //If the colors are not all equal,
+        tempColor = primitives.Color.BLACK;//the method initializes tempColor to black
+        for (Point center : nextCenterPList) {//and recursively calls AdaptiveSuperSamplingRec for each next center point, adding the resulting colors.
+            tempColor = tempColor.add(AdaptiveSuperSamplingRec(center, Width/2,  Height/2,  minWidth,  minHeight ,  cameraLoc, Vright, Vup, cornersList));
+        }
+        return tempColor.reduce(nextCenterPList.size());// the average color from all the colors obtained from the recursive calls.
+
+
+    }
+    /**
+     * Find a point in the list
+     * @param pointsList the list
+     * @param point the point that we look for
+     * @return
+     */
+    private boolean isInList(List<Point> pointsList, Point point) {
+        for (Point tempPoint : pointsList) {
+            if(point.equals(tempPoint))
+                return true;
+        }
+        return false;
+    }
+    /**
+     * get the center point of the pixel in the view plane
+     *
+     * @param nX number of pixels in the width of the view plane
+     * @param nY number of pixels in the height of the view plane
+     * @param j  index row in the view plane
+     * @param i  index column in the view plane
+     * @return the center point of the pixel
+     */
+    private Point getCenterOfPixel(int nX, int nY, int j, int i) {
+        // calculate the ratio of the pixel by the height and by the width of the view plane
+        // the ratio Ry = h/Ny, the height of the pixel
+        double rY = alignZero(height / nY);
+        // the ratio Rx = w/Nx, the width of the pixel
+        double rX = alignZero(width / nX);
+
+        // Xj = (j - (Nx -1)/2) * Rx
+        double xJ = alignZero((j - ((nX - 1d) / 2d)) * rX);
+        // Yi = -(i - (Ny - 1)/2) * Ry
+        double yI = alignZero(-(i - ((nY - 1d) / 2d)) * rY);
+
+        Point pIJ =centerScreenPoint(); // the center of the screen point
+
+
+        if (!isZero(xJ)) {
+            pIJ = pIJ.add(vRight.scale(xJ));
+        }
+        if (!isZero(yI)) {
+            pIJ = pIJ.add(vUp.scale(yI));
+        }
+        return pIJ;
+    }
+
     /**
      * Writes a grid of pixels to the image writer, with a given interval between
      * the grid lines and a specified color.
@@ -299,6 +495,7 @@ public class Camera implements Cloneable {
         Ray ray = constructRay(nX,nY,j,i);
         Color color= this.rayTracer.traceRay(ray);
         this.imageWriter.writePixel(j, i, color);
+        //Pixel.pixelDone();
     }
 
 
