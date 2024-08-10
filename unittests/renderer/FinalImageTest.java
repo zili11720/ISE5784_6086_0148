@@ -221,11 +221,9 @@ public class FinalImageTest {
                 .setImageWriter(new ImageWriter("teddyBear", 600, 600))
                 .setNumOfRays(1000)
                 .setadaptive(true)
-                .setMultithreading(30)
+                .setMultithreading(100)
                 .build()
                 .renderImage()
                 .writeToImage();
     }
-
-
 }

@@ -32,11 +32,9 @@ public abstract class RayTracerBase {
      */
     public abstract Color traceRay(Ray ray);
 
-    /**
-     * Traces a given list of rays and returns the average of colors of the first hit object in the
-     * scene for each ray, or black if there is no hit.
-     * @param rays the rays to trace
-     * @return the average color of the first hit object in the scene of each ray, or black if there is no hit
-     */
-    public abstract Color traceRay(List<Ray> rays);
+//   /** Traces a given list of rays and returns the average of colors of the first hit object in the
+//    * scene for each ray, or black if there is no hit.
+//    * @param rays the rays to trace
+//    */
+   //public abstract Color traceRay(List<Ray> rays);
 }

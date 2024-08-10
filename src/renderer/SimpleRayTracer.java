@@ -45,15 +45,15 @@ public class SimpleRayTracer extends RayTracerBase {
         return closestPoint==null ? scene.background: calcColor(closestPoint,ray);
     }
 
-    @Override
-    public Color traceRay(List<Ray> rays) {
-        if(rays == null)
-            return scene.background;
-        Color color=scene.ambientLight.getIntensity();
-        for (Ray ray : rays)
-            color = color.add(traceRay(ray));
-        return color.reduce(rays.size());
-    }
+//    @Override
+//    public Color traceRay(List<Ray> rays) {
+//        if(rays == null)
+//            return scene.background;
+//        Color color=scene.ambientLight.getIntensity();
+//        for (Ray ray : rays)
+//            color = color.add(traceRay(ray));
+//        return color.reduce(rays.size());
+//    }
 
     /**
      * Calculates the color of a given point in the scene recursively.

@@ -37,7 +37,7 @@ public class Camera implements Cloneable {
     private int numOfRays=1;
 
     //variables for acceleration
-    private int threadsCount = 0; // -2 auto, -1 range/stream, 0 no threads, 1+ number of threads
+    private int threadsCount = 1; // -2 auto, -1 range/stream, 0 no threads, 1+ number of threads
     private final int SPARE_THREADS = 2; // Spare threads if trying to use all the cores
     private double printInterval = 0; // printing progress percentage interval
     private boolean adaptive = false;
@@ -195,7 +195,7 @@ public class Camera implements Cloneable {
         }
 
         /**
-         * set the adaptive
+         * set the adaptive to decide of we want multi threading and antialiasing
          *
          * @return the Camera object
          */
@@ -204,6 +204,11 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        /**
+         * set the number of threads that can run concurrently
+         * @param threads number of threads
+         * @return the camera object
+         */
         public Builder setMultithreading(int threads) {
             if (threads < -2)
                 throw new IllegalArgumentException("Multithreading must be -2 or higher");
@@ -216,6 +221,11 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        /**
+         * set percentage of completed rendering
+         * @param interval percentage of completed rendering
+         * @return the camera object
+         */
         public Builder setDebugPrint(double interval) {
             camera.printInterval = interval;
             return this;
@@ -250,9 +260,6 @@ public class Camera implements Cloneable {
             }
             if(camera.rayTracer == null) {
                 throw new MissingResourceException(missingData, Camera.class.getName(), "rayTracer");
-            }
-            if(camera.numOfRays == 0) {
-                throw new MissingResourceException(missingData, Camera.class.getName(), "numOfRays");
             }
 
             try {
@@ -325,18 +332,19 @@ public class Camera implements Cloneable {
         Vector Vup = vUp;
         Point cameraLoc = location;
         int numOfRaysInRowCol = (int)Math.floor(Math.sqrt(numOfRays));//number of rays in each row and column
+        //only one ray per pixel
         if(numOfRaysInRowCol == 1)  return rayTracer.traceRay(constructRay(nX, nY, j, i));
 
-        Point pIJ = getCenterOfPixel(nX, nY, j, i);
+        Point centerOfScreen = getCenterOfPixel(nX, nY, j, i);
 
         //calculate the height and width of a pixel in the view plane
         double rY = alignZero(height / nY);
-        // the ratio Rx = w/Nx, the width of the pixel
         double rX = alignZero(width / nX);
+
         //these lines calculate the height (PRy) and width (PRx) of the sub-pixels
-        double PRy = rY/numOfRaysInRowCol;
-        double PRx = rX/numOfRaysInRowCol;
-        return AdaptiveSuperSamplingRec(pIJ, rX, rY, PRx, PRy,cameraLoc,Vright, Vup,null);//he result is the color of the pixel determined through adaptive super-sampling
+        double PRy = rY/numOfRaysInRowCol;//height of mini pixel
+        double PRx = rX/numOfRaysInRowCol;//width of mini pixel
+        return AdaptiveSuperSamplingRec(centerOfScreen, rX, rY, PRx, PRy,cameraLoc,Vright, Vup,null);//he result is the color of the pixel determined through adaptive super-sampling
     }
 
     private Point centerScreenPoint() {
@@ -403,8 +411,6 @@ public class Camera implements Cloneable {
             tempColor = tempColor.add(AdaptiveSuperSamplingRec(center, Width/2,  Height/2,  minWidth,  minHeight ,  cameraLoc, Vright, Vup, cornersList));
         }
         return tempColor.reduce(nextCenterPList.size());// the average color from all the colors obtained from the recursive calls.
-
-
     }
     /**
      * Find a point in the list
@@ -440,16 +446,16 @@ public class Camera implements Cloneable {
         // Yi = -(i - (Ny - 1)/2) * Ry
         double yI = alignZero(-(i - ((nY - 1d) / 2d)) * rY);
 
-        Point pIJ =centerScreenPoint(); // the center of the screen point
+        Point centerOfScreen =centerScreenPoint(); // the center of the screen point
 
 
         if (!isZero(xJ)) {
-            pIJ = pIJ.add(vRight.scale(xJ));
+            centerOfScreen = centerOfScreen.add(vRight.scale(xJ));
         }
         if (!isZero(yI)) {
-            pIJ = pIJ.add(vUp.scale(yI));
+            centerOfScreen = centerOfScreen.add(vUp.scale(yI));
         }
-        return pIJ;
+        return centerOfScreen;//returns the center of the pixel
     }
 
     /**
