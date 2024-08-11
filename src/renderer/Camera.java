@@ -285,28 +285,22 @@ public class Camera implements Cloneable {
         int nX = imageWriter.getNx();
         int nY = imageWriter.getNy();
 
-//        for (int j = 0; j < nX; j++) {
-//            for (int i = 0; i < nY; i++) {
-//                if(numOfRays==1)
-//                      castRay(j, i, nX, nY);
-//                else {
-//                    List<Ray> rays = constructBeamOfRays(nX, nY, j, i, numOfRays);
-//                    Color rayColor = rayTracer.traceRay(rays);
-//                    imageWriter.writePixel(j, i, rayColor);
-//                }
-//            }
-//        }
-        Pixel.initialize(nY, nX, 1);
-
+        //regular or antialiasing without acceleration
         if (!adaptive) {
-            while (threadsCount-- > 0) {//number of threads to be used for rendering
-                new Thread(() -> {//This creates and starts a new thread
-                    for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())//A new Pixel object is created,The loop continues as long as there are more pixels to process.
-                        imageWriter.writePixel(pixel.col, pixel.row, rayTracer.traceRay(constructRay(nX, nY, pixel.col, pixel.row)));//For each pixel, imageWriter.writePixel() is called to write the color of the pixel traced by rayTracer.traceRay()
-                }).start();
+            for (int j = 0; j < nX; j++) {
+                for (int i = 0; i < nY; i++) {
+                    if(numOfRays==1)
+                        castRay(j, i, nX, nY);
+                    else {
+                        List<Ray> rays = constructBeamOfRays(nX, nY, j, i, numOfRays);
+                        Color rayColor = rayTracer.traceRay(rays);
+                        imageWriter.writePixel(j, i, rayColor);
+                    }
+                }
             }
-            Pixel.waitToFinish();// starting all the threads,until all pixels to be processed
-        } else {//adaptive rendering should be used.
+
+        } else {//acceleration using super sampling and threads
+            Pixel.initialize(nY, nX, 1);
             while (threadsCount-- > 0) {
                 new Thread(() -> {
                     for (Pixel pixel = new Pixel(); pixel.nextPixel(); Pixel.pixelDone())
